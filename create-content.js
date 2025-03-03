@@ -39,6 +39,9 @@ function createStoryContentInHtml(storyData) {
   const subtitle = document.getElementById("subtitle");
   subtitle.innerHTML = storyData.subtitle;
 
+  const authors = document.getElementById("authors");
+  authors.innerHTML = storyData.authors;
+
   const endText = document.getElementById("end-text");
   endText.innerHTML = storyData.endText;
 }

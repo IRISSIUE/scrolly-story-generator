@@ -14,6 +14,7 @@ export class StoryData {
     subtitle,
     endText,
     textHorizontalPercentage,
+    authors,
     footer
   ) {
     this.scrollType = DOMPurify.sanitize(scrollType);
@@ -23,6 +24,7 @@ export class StoryData {
     this.textHorizontalPercentage = DOMPurify.sanitize(
       textHorizontalPercentage
     );
+    this.authors = DOMPurify.sanitize(authors);
     this.textHorizontalPercentage = stripPercentageCharIfExists(
       this.textHorizontalPercentage
     );
