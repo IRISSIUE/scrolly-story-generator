@@ -2,13 +2,13 @@
 
 This project allows you to create a scrollytelling story using data from a spreadsheet.
 
-A scrollytelling story is a web page that scrolls text down a web page while other content (such as images, maps, or videos), remain "sticky" and stays in the same position on the page. The sticky content changes as the user scrolls, to illustrate the current step in the story being told.
+A scrollytelling story scrolls text down a web page while other content (such as images, maps, or videos), remain "sticky" and stay in the same position on the page. The sticky content changes as the user scrolls, to illustrate the current step in the story being told.
 
 This project contains a sample [Scrolly Story](https://irissiue.github.io/scrolly-story-generator/) that you can use as a starting point to create your own.
 
 # How to Create Your Own Scrolly Story
 
-Scrolly Stories can be created either from a [Google Sheet](https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c) linked to your project, or a CSV file of the same format that is uploaded into your GitHub repository. It will be easier to develop your story if you start from a Google Sheet, because you can edit the google sheet and then refresh the story and you'll see your changes right away. To see changes from a CSV file, you'll need to update your git repository with the CSV file before you can see your changes. It is recommended that you develop your story from a Google Sheet, and when it is ready, upload a CSV file for the final version so that all your data is in a single place (the GitHub repository).
+Scrolly Stories can be created from a [Google Sheet](https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c) linked to your project (and eventually, from a CSV file uploaded to GitHub). Editing the google sheet allows you to refresh the web page and see your changes right away.
 
 ## Overview
 
@@ -20,9 +20,7 @@ The main steps
 4. Link your Google Sheet to your repository
 5. Develop your story by editing the Google Sheet
 6. Upload any images, videos, or audio you use in the story into your GitHub repository
-7. After you've created your story and want to share it widely, you'll need to do one of the following (explained below):
-   - Convert your Google Sheet to a CSV file and upload to your repository (recommended)
-   - To continue using Google Sheets, generate your own API key, or
+7. After you've created your story and want to share it widely, you'll need to generate your own Google Sheet API key
 
 ### Detailed Steps
 
@@ -81,6 +79,10 @@ This contains all the data you can change about the story as a whole. It is a si
 - **Title** - the title of the page, displayed as Header (H1) at the top of the page
 - **Subtitle** - an optional subtitle, displayed below the title
 - **EndText** - text that can go at the end of page, after the scrolly content has ended, if you to wrap up the story.
+- **TextHorizontalPercentage** - determines how wide the text box is compared to the media in your story. The value here is the percentage of the width the text should have, so a value of 33 will give the text 1/3 of the width and the media 2/3 of the width.
+- **Authors** - optionally displays the author(s) of the page below the subtitle
+
+All of the fields that display text can have HTML tags with inline CSS styles within them, and the code will display it, as long as it doesn't conflict with an existing CSS style.
 
 ## Steps Tab
 
@@ -94,6 +96,7 @@ Values are:
   - Image
   - Map
   - Video
+  - Text
 - **FilePath** - The path to the image, video, or audio file being used in the step, either relative to the GitHub project, or a URL to external media. Note that for videos from services like youtube or vimeo, you have to use the URL from the embed code, not the brower's URL.
   - Example: ./media/my-image.jpg
   - Example: http://www.siue.edu/some_image.jpeg
@@ -113,9 +116,9 @@ Values are:
     - the default 1, so specifying 1 doesn't change the zoom
     - Positive numbers scale the image up or down (zoom in or out)
       - Numbers between 0 and 1 scale an image down, which zooms it out. A value of 0.5 makes the image half as big, and 0 will make the image disappear as it scales the image down to 0 size.
-      - Numbers above 1 scale the image up that many times. A value 1.5 will make the image twice ts original size, which zooms in.
+      - Numbers above 1 scale the image up that many times. A value 2 will make the image twice ts original size, which zooms in.
       - Negative numbers flip the element as well as scale it. A value of -1.5 will flip the image horizontally and zoom in by a factor of 1.5
-- **Text** - The text that scrolls up for this step
+- **Text** - The text that scrolls up for this step. HTML and CSS can be included here and th code will display it, as long as it doesn't conflict with an existing CSS style.
 
 # Credits
 
