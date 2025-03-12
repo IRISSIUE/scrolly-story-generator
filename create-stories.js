@@ -1,23 +1,15 @@
+import { mkdirSync, writeFile, existsSync } from "node:fs";
+
 export function createStory(storyId) {
-  const storyData = {
-    title: "My Story " + storyId,
-    // ...existing code...
-  };
+  // get story data from Google
+  // Copy template files to story folder
+  // update template files with story data to create story
 
-  // Create directory if it doesn't exist
-  const storiesDir = "./stories";
-  if (!fs.existsSync(storiesDir)) {
-    fs.mkdirSync(storiesDir);
-  }
+  copyTemplateFilesToStoryFolder(storyId);
+}
 
-  // Create story-specific directory
-  const storyDir = `${storiesDir}/${storyData.title.replace(/\s+/g, "-")}`;
-  if (!fs.existsSync(storyDir)) {
-    fs.mkdirSync(storyDir);
-  }
-
-  // Create files
-  createStoryFiles(storyDir, storyData);
+function copyTemplateFilesToStoryFolder(storyId) {
+  createStoryFolderIfNotExists(storyId);
 }
 
 function createStoryFiles(storyDir, storyData) {
@@ -37,5 +29,12 @@ function createStoryFiles(storyDir, storyData) {
   const assetsDir = `${storyDir}/assets`;
   if (!fs.existsSync(assetsDir)) {
     fs.mkdirSync(assetsDir);
+  }
+}
+
+function createStoryFolderIfNotExists(storyId) {
+  const storyDir = `./stories/${storyId}`;
+  if (!fs.existsSync(storyDir)) {
+    fs.mkdirSync(storyDir);
   }
 }

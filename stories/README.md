@@ -1,0 +1,1 @@
+Folders in this directory are scrolly stories that are generated from data sources. Once created, the content is static and can be copied elsewhere (to other servers if needed) to display the story in a self-contained way, without having to import data from elsewhere.

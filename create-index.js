@@ -13,8 +13,6 @@ async function createStoryIndex() {
     const indexContainer = document.getElementById("story-index-container");
     const allStoryData = await fetchStoryDataFromAllGoogleSheets();
 
-    console.log("allStoryData: ", allStoryData);
-
     // TODO: Ensure all story IDs are unique
     const storyIndexHTML = allStoryData
       .map(

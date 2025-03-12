@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title id="browser-title"> </title>
+    <meta name="description" content="Scrollama: Sticky Side Example" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="scrolly.css" />
+
+    <!-- Scrollama is a library for creating scrollytelling experiences, and depends on intersection observer -->
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+
+    <!-- Leaflet includes for displaying maps -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- PapaParse is a CSV parser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script src="leaflet-maps.js"></script>
+    <script src="google-sheet.js" type="module"></script>
+    <script src="scrolly.js" type="module"></script>
+
+    <!-- DOM Purify ensures user input can't be used for scripting tomfoolery -->
+    <script src=" https://cdn.jsdelivr.net/npm/dompurify@3.2.3/dist/purify.min.js "></script>
+  </head>
+
+  <body>
+    <main>
+      <section id="intro">
+        <h1 id="story-title">Scrolly Story</h1>
+        <p id="subtitle"></p>
+        <p>By <span id="authors"></span></p>
+      </section>
+
+      <!-- The error dialog is only displayed when there is an error-->
+      <section id="error-container">
+        <div id="error-dialog">
+          <p id="error-header">Dang.</p>
+          <p id="error-message"></p>
+          <p id="error-action-container">
+            Error happened while: <span id="error-action"></span>
+          </p>
+          <p id="error-hint"></p>
+        </div>
+      </section>
+
+      <!-- The 'content-section' is just here for reference/example, as it will be entirely replaced 
+          by JavaScript generated code containing the content from a data source.
+
+          Multiple scrolly-container divs are necessary because a content-type of "text" can't be
+          within a scrolly container, as it uses up the entire horizontal width and does not have
+          any sticky content. It will just scroll normally. 
+
+          When we encounter a "text" content type, we close the current scrolly-container
+          and create a text div. If there's more scrolly content after the text step, 
+          then we'll create another scrolly-container after that (and repeat as necessary)
+    -->
+
+      <section id="content-section">
+        <div class="scrolly-container">
+          <div class="steps-container" style="width: 25%">
+            <div
+              class="step"
+              data-step="1"
+              data-content-type="image"
+              data-file-path="path"
+              data-alt-text="Alt Text"
+              data-zoom-level="1"
+            >
+              <p class="step-content">
+                This is a Scrollytelling story, where this text on the left
+                scrolls down the page while the image to right remains "sticky"
+                and stays in place.<br /><br />Go ahead and scroll now
+              </p>
+            </div>
+            <div
+              class="step"
+              data-step="2"
+              data-content-type="image"
+              data-file-path="path"
+              data-alt-text="Alt Text 2"
+              data-zoom-level="2"
+            >
+              <p class="step-content">
+                You can also zoom into or out of the picture to focus the user's
+                attention
+              </p>
+            </div>
+          </div>
+          <div class="sticky-container" style="width: 75%">
+            <div class="sticky-image-container">
+              <img />
+            </div>
+            <div class="sticky-map-container" id="sticky-map-container-1"></div>
+            <div class="sticky-video-container"></div>
+          </div>
+        </div>
+        <div class="text-content" data-step="3">
+          <h2>Text-only Step</h2>
+          This is an example of a text-only step that spans the width of the
+          page, with no sticky content
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel
+            sapien rhoncus augue ultricies sollicitudin eget quis orci. Mauris
+            rutrum ante urna, eu feugiat tellus interdum vel. Aliquam placerat
+            elit in nisi sagittis, nec sodales quam dictum. Cras interdum
+            laoreet massa, eget ullamcorper lacus tempor in. Nullam sit amet
+            libero magna. Morbi elit turpis, pharetra in mollis sed, tempor et
+            libero. Integer ligula diam, vehicula sed ante sed, varius
+            scelerisque lorem.
+          </p>
+        </div>
+        <div class="scrolly-container">
+          <div class="steps-container" style="width: 25%">
+            <div
+              class="step"
+              data-step="4"
+              data-content-type="map"
+              data-alt-text="Alt Text"
+              data-latitude="38.794"
+              data-longitude="-89.9979"
+              data-zoom-level="18"
+            >
+              <p class="step-content">
+                You can display a map instead of an image by supplying map
+                coordinates
+              </p>
+            </div>
+          </div>
+          <div class="sticky-container" style="width: 75%">
+            <div class="sticky-image-container">
+              <img />
+            </div>
+            <div class="sticky-map-container" id="sticky-map-container-5"></div>
+            <div
+              class="sticky-video-container"
+              aria-label="The Rock at SIUE live stream"
+              role="tooltip"
+              style="opacity: 0; display: none"
+            >
+              <iframe
+                id="the-iframe-video"
+                src=""
+                frameborder="0"
+                referrerpolicy="strict-origin-when-cross-origin"
+              >
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="outro">
+        <p id="end-text"></p>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 import { StepData } from "./common.js";
+import { displayThenThrowError } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
 
 let _stickyImageContainer = null;
@@ -12,10 +13,18 @@ const transitionInMilliseconds = 500;
 let scroller = scrollama();
 
 document.addEventListener("DOMContentLoaded", async function () {
-  await createAllStoryScrollyContentInHTML();
+  console.log("Adding event listeners to story buttons");
+  document.querySelectorAll("[data-story-id]").forEach((button) => {
+    button.addEventListener("click", function () {
+      console.log("button clicked" + this.dataset.storyId);
+      createStory(this.dataset.storyId);
+    });
+  });
+
+  //await createAllStoryScrollyContentInHTML();
 
   // initialize scrollama after the scrolly content has been created
-  initScrollama();
+  //initScrollama();
 });
 
 // scrollama event handlers
@@ -192,4 +201,86 @@ function initScrollama() {
 
   // setup resize event
   window.addEventListener("resize", scroller.resize);
+}
+
+//-----------------------------------
+
+function createStory(storyId) {
+  const storyData = {
+    title: "My Story " + storyId,
+    // Gather current story data
+    steps: Array.from(document.querySelectorAll(".step")).map((step) => ({
+      contentType: step.dataset.contentType,
+      text: step.querySelector(".step-content").textContent,
+      // ...other data...
+    })),
+  };
+
+  createNewStoryPage(storyData);
+}
+
+export function createNewStoryPage(storyData) {
+  // Generate complete HTML document
+  const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <title>${storyData.title || "New Story"}</title>
+    <style>
+        /* Embed critical CSS here */
+        .sticky-content {
+            position: sticky;
+            top: 12.5vh;
+            height: 75vh;
+            width: 75%;
+        }
+        /* ...more styles... */
+    </style>
+</head>
+<body>
+    <main>
+        <section id="content-section">
+            ${generateStoryContent(storyData)}
+        </section>
+    </main>
+    <script>
+        // Embed necessary JavaScript
+        ${embedRequiredJavaScript()}
+    </script>
+</body>
+</html>`;
+
+  // Create blob from HTML content
+  const blob = new Blob([htmlContent], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  // Option 1: Open in new window
+  //window.open(url, "_blank");
+
+  // Option 2: Trigger download
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${storyData.title || "new-story"}.html`;
+  link.click();
+
+  // Clean up
+  URL.revokeObjectURL(url);
+}
+
+function generateStoryContent(storyData) {
+  // Generate HTML for story content
+  return `
+        <div class="scrolly-container"> This is a scrolly container for ${storyData.title}
+            <!-- Generated content here -->
+        </div>
+    `;
+}
+
+function embedRequiredJavaScript() {
+  // Return minified version of necessary JavaScript
+  return `
+        // Core functionality JavaScript here
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize scrollama and other features
+        });
+    `;
 }
