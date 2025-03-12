@@ -1,41 +1,4 @@
-import { fetchStoryDataFromAllGoogleSheets } from "./google-sheet.js";
-import { displayThenThrowError } from "./common.js";
-
-document.addEventListener("DOMContentLoaded", async function () {
-  createStoryIndex();
-});
-
-async function createStoryIndex() {
-  try {
-    const indexContainer = document.getElementById("story-index-container");
-    const allStoryData = await fetchStoryDataFromAllGoogleSheets();
-
-    console.log("allStoryData: ", allStoryData);
-
-    const storyIndexHTML = allStoryData
-      .map(
-        (story) => `
-        <p>
-        <button id="story${story.id}" 
-                data-story-id="${convertStoryTitleToID(story.title)}">
-            Generate ${story.title}
-        </button>
-        </p>
-    `
-      )
-      .join("");
-
-    indexContainer.innerHTML = storyIndexHTML;
-  } catch (scrollyError) {
-    displayThenThrowError(scrollyError);
-  }
-}
-
-function convertStoryTitleToID(title) {
-  return title.replace(/\s+/g, "-").toLowerCase();
-}
-
-function createStory(storyId) {
+export function createStory(storyId) {
   const storyData = {
     title: "My Story " + storyId,
     // ...existing code...

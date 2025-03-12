@@ -47,6 +47,10 @@ export class StoryData {
   }
 }
 
+export function convertStoryTitleToID(title) {
+  return title.replace(/\s+/g, "-").toLowerCase();
+}
+
 export function isNumber(value) {
   // Check for empty strings or whitespace
   if (typeof value === "string" && value.trim() === "") {
