@@ -1,9 +1,9 @@
 // Defines all the data needed for a step
 
 export class ScrollyData {
-  constructor(storyData, stepData) {
+  constructor(storyData, stepDataArray) {
     this.storyData = storyData;
-    this.stepData = stepData;
+    this.stepData = stepDataArray;
   }
 }
 

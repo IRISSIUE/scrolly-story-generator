@@ -1,5 +1,6 @@
 import { ScrollyData, StoryData, StepData, ScrollyError } from "./common.js";
 
+// TODO: Update this documentation for Array of Google Sheets
 // The Google Sheet below is a template. You can copy it to your Google Drive and use it to create your own scroll story.
 // Use the URL from the browser address bar replacing the one below.
 // Note that you must publish this sheet to the web for it to be accessible by the Google Sheets API.
@@ -8,8 +9,10 @@ import { ScrollyData, StoryData, StepData, ScrollyError } from "./common.js";
 //     Menu bar at the top right up arrow to see the Sheets menus)
 // Also, you must Share the sheet so that anyone with a link can access it
 //     Share button at top right of sheet -> General Access -> Anyone with the link -> Viewer
-const googleSheetURL =
-  "https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c/edit?gid=0#gid=0";
+const googleSheetURLArray = [
+  "https://docs.google.com/spreadsheets/d/1Nkq7DLecFxgwSs9tC0f_k0tTNTHPrsV3Bqf9L98aSuQ",
+  "https://docs.google.com/spreadsheets/d/12k_5yQZBMUCSNZyLDzhBBtV2A6Rp0V5PsVVWu2iUvDc",
+];
 
 // An API Key is required to read a google sheet from an application. It is generated at https://console.developers.google.com
 // and if you plan to publish this scrolly story on your own standalone site, you will need to generate your own key.
@@ -28,17 +31,8 @@ const sheetNames = ["Story", "Steps"];
 const storyIndex = 0;
 const stepsIndex = 1;
 
-const spreadsheetId = extractSpreadsheetIDFromURL(googleSheetURL);
-function extractSpreadsheetIDFromURL(url) {
-  try {
-    return url.match(/\/d\/([a-zA-Z0-9-_]+)/)[1];
-  } catch (error) {
-    return "InvalidGoogleSheetURL";
-  }
-}
-
-const apiEndpoint = createGoogleSheetsAPIEndpoint(spreadsheetId, googleApiKey);
-function createGoogleSheetsAPIEndpoint() {
+function createGoogleSheetsAPIEndpoint(googleSheetURL) {
+  const spreadsheetId = extractSpreadsheetIDFromURL(googleSheetURL);
   var rangesParameter = ""; // each range in a google sheet is a sheet (tab) name
   sheetNames.map((sheetName, i) => {
     rangesParameter += `ranges=${sheetName}`;
@@ -48,6 +42,50 @@ function createGoogleSheetsAPIEndpoint() {
   });
 
   return `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values:batchGet?${rangesParameter}&key=${googleApiKey}`;
+}
+
+function extractSpreadsheetIDFromURL(url) {
+  try {
+    return url.match(/\/d\/([a-zA-Z0-9-_]+)/)[1];
+  } catch (error) {
+    return "InvalidGoogleSheetURL";
+  }
+}
+
+// Fetch just the story data from all Google Sheets
+export async function fetchStoryDataFromAllGoogleSheets() {
+  let allStoryData = [];
+  for (const url of googleSheetURLArray) {
+    let storyData = await fetchStoryDataFromSingleGoogleSheet(url);
+    allStoryData.push(storyData);
+  }
+  return allStoryData;
+}
+
+// Fetch just the story data from a single Google Sheets
+export async function fetchStoryDataFromSingleGoogleSheet(googleSheetURL) {
+  try {
+    const apiEndpoint = createGoogleSheetsAPIEndpoint(googleSheetURL);
+    const response = await fetch(apiEndpoint);
+    const sheetsArray = await response.json();
+    if (!response.ok) {
+      throwErrorFromGoogleSheetResponse(sheetsArray.error);
+    }
+
+    const storyData = convertGoogleSheetDataToStoryData(
+      sheetsArray.valueRanges[storyIndex].values
+    );
+    return storyData;
+  } catch (error) {
+    // Convert error to ScrollyError if it is not already
+    if (!(error instanceof ScrollyError)) {
+      error = new ScrollyError(
+        "Fetching data from Google Sheet " + googleSheetURL,
+        error.toString()
+      );
+    }
+    throw error;
+  }
 }
 
 // Function to fetch data from Google Sheets
@@ -64,18 +102,19 @@ export async function fetchAllDataFromGoogleSheet() {
     // Convert error to ScrollyError if it is not already
     if (!(error instanceof ScrollyError)) {
       error = new ScrollyError(
-        "Fetching data from Google Sheet " + googleSheetURL,
+        "Fetching data from Google Sheet " + googleSheetURLArray[0], //TODO handle multiple URLs
         error.toString()
       );
     }
     throw error;
   }
 }
+
 function throwErrorFromGoogleSheetResponse(responseError) {
   throwMissingSheetNameErrorIfExists(responseError);
 
   throw new ScrollyError(
-    "Fetching data from Google Sheet " + googleSheetURL,
+    "Fetching data from Google Sheet " + googleSheetURLArray[0], //TODO handle multiple URLs,
     responseError.message
   );
 }
@@ -87,7 +126,7 @@ function throwMissingSheetNameErrorIfExists(responseError) {
       responseError.message.includes("Unable to parse range")
     ) {
       throw new ScrollyError(
-        "Fetching data from Google Sheet " + googleSheetURL,
+        "Fetching data from Google Sheet " + googleSheetURLArray[0], //TODO handle multiple URLs
         `Sheet name "${sheetName}" not found in the Google Sheet.`
       );
     }
