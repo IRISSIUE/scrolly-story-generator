@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Runner</title>
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+
+    <!-- Test Framework -->
+    <script src="https://unpkg.com/chai@4.3.4/chai.js"></script>
+    <script src="https://unpkg.com/mocha@10.2.0/mocha.js"></script>
+
+    <!-- Code Libraries/Frameworks that get called during course of testing -->
+    <script src=" https://cdn.jsdelivr.net/npm/dompurify@3.2.3/dist/purify.min.js "></script>
+
+    <!-- Setup -->
+    <script>
+      mocha.setup("bdd");
+      window.describe = describe;
+      window.it = it;
+      window.expect = chai.expect;
+    </script>
+
+    <script type="module">
+      // Import all test modules
+      import "./common.test.js";
+      // import "./google-sheet.test.js";
+      import "./create-content.test.js";
+      // Add more test imports as needed
+
+      // Run all tests
+      mocha.run();
+    </script>
+  </body>
+</html>

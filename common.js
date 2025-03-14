@@ -53,7 +53,16 @@ export function isNumber(value) {
     return false;
   }
 
-  // Convert to number and check if it's valid
+  // check for null or undefined or non-numeric values
+  if (
+    value == null ||
+    value == undefined ||
+    Array.isArray(value || typeof value === "object")
+  ) {
+    return false;
+  }
+
+  // Convert to number and check if it's a finite number
   const num = Number(value);
   return !isNaN(num) && Number.isFinite(num);
 }

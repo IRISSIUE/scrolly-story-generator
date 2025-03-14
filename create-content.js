@@ -29,7 +29,8 @@ export async function createAllStoryScrollyContentInHTML() {
 /*
     Story Level content
 */
-function createStoryContentInHtml(storyData) {
+export function createStoryContentInHtml(storyData) {
+  // export for testing only
   const storyTitle = document.getElementById("story-title");
   storyTitle.innerHTML = storyData.title;
 
