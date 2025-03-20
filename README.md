@@ -111,9 +111,7 @@ Here are some resources you might find helpful in the classroom (or for your own
 
 - [Student scrollytelling tutorial](https://www.github.com/IRISSIUE/scrollytelling-tutorial)
 - [Finding media licensed for reuse](https://iris.siue.edu/public-domain-and-open-access-media/)
-- Storyboarding guides
-- Example scrollytelling pieces
-- Digital storytelling resources
+- [Storyboarding guide (by Jessica DeSpain)](https://iris.siue.edu/codes/storyboarding/)
 
 # Credits
 
