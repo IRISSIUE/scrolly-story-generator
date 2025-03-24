@@ -61,6 +61,20 @@
       <!-- The 'content-section' is just here for reference/example, as it will be entirely replaced 
           by JavaScript generated code containing the content from a data source.
 
+          The content-section contains everything about the scrolly story, and can contain any number
+          of scrolly-container divs and text-content divs. 
+          
+          A scrolly-container has steps-container div and a sticky-container div
+          
+          The steps-container div has every step in the story (class=step), and each step
+          has the step text that scrolls and data about what to display in the sticky-container while 
+          the step is active.
+          
+          The steps-container div also has a sticky-container div, which contains the sticky content
+          for the step, which stays in the same position as the step text scrolls. The sticky content
+          can be an image, map, or video, each of which have their own div, and 
+          will be displayed or hidden depending on which is associated with the currently active step. 
+
           Multiple scrolly-container divs are necessary because a content-type of "text" can't be
           within a scrolly container, as it uses up the entire horizontal width and does not have
           any sticky content. It will just scroll normally. 

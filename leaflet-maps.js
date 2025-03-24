@@ -1,3 +1,7 @@
+/*
+  leaflet-maps.js handles displaying leaflet maps from within a sticky container
+*/
+
 let leafletMap = null;
 let leafletMapId = null;
 

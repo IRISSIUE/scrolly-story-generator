@@ -1,3 +1,8 @@
+/*
+  create-content.js creates the HTML for a scrolly story from on story and step data 
+  imported from elsewhere, like a google sheet.
+  See index.html for the expected structure of the HTML 
+*/
 import { fetchAllDataFromGoogleSheet } from "./google-sheet.js";
 import { validateStepDataArray } from "./common.js";
 import { displayThenThrowError } from "./common.js";
@@ -29,8 +34,8 @@ export async function createAllStoryScrollyContentInHTML() {
 /*
     Story Level content
 */
+// export for testing only
 export function createStoryContentInHtml(storyData) {
-  // export for testing only
   const storyTitle = document.getElementById("story-title");
   storyTitle.innerHTML = storyData.title;
 

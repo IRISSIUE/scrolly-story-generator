@@ -1,3 +1,8 @@
+/*
+  google-sheet.js fetches data from a Google Sheet and converts it to ScrollyData,
+  so the HTML page can be created with the data.
+*/
+
 import { ScrollyData, StoryData, StepData, ScrollyError } from "./common.js";
 
 // The Google Sheet below is a template. You can copy it to your Google Drive and use it to create your own scroll story.

@@ -1,3 +1,9 @@
+/*
+  Scrolly.js handles all the scrolling. It uses the Scrollama library to detect when a step
+  is entered, and then replaces the content in the sticky container with the content associated with
+  that step. It also handles transitions between different types of content (images, maps, videos). 
+*/
+
 import { StepData } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
 

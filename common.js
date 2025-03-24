@@ -1,3 +1,8 @@
+/*
+  common.js contains the data structures and validation functions for the scrolly story,
+  plus other common functions used by the scrolly story.
+*/
+
 // Defines all the data needed for a step
 
 export class ScrollyData {
