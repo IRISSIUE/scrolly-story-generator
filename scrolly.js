@@ -185,7 +185,7 @@ function initScrollama() {
   scroller
     .setup({
       step: ".scrolly-container .step",
-      offset: 0.75, // what % from the top of the viewport the step should be considered "entered"
+      offset: 0.65, // what % from the top of the viewport the step should be considered "entered"
       debug: false,
     })
     .onStepEnter(handleStepEnter);
