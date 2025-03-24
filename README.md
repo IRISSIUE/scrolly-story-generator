@@ -1,3 +1,12 @@
+## Jump To
+
+- [Using the Scrolly Story Generator](#using-the-scrolly-story-generator)
+- [What you need to get started](#what-you-need-to-get-started)
+- [Step by step set-up guide](#step-by-step-set-up-guide)
+- [Editing guide](#editing-guide)
+- [Classroom considerations](#classroom-considerations)
+- [Credits](#credits)
+
 # Scrolly Story Generator
 
 This project allows you to create a scrollytelling story using data from a spreadsheet.
@@ -10,21 +19,25 @@ This project was designed for classroom use, but it's useful for any number of a
 
 ## Using the Scrolly Story Generator
 
-**Why scrollytelling?** Scrollytelling is a form of interactive storytelling that pairs text with media. As you scroll through the narrative, the media automatically transforms. Media might include video, images, and clickable maps. The key to good scrollytelling is to think about how your text and media enhance one another. The media isn’t just illustrating the text – it's adding meaning that the text can’t convey effectively or completely on its own. Scrollytelling is a useful tool for teaching multimodal writing, place-based storytelling, community-engaged scholarship, and more. 
+**Why scrollytelling?** Scrollytelling is a form of interactive storytelling that pairs text with media. As you scroll through the narrative, the media automatically transforms. Media might include video, images, and clickable maps. The key to good scrollytelling is to think about how your text and media enhance one another. The media isn’t just illustrating the text – it's adding meaning that the text can’t convey effectively or completely on its own. Scrollytelling is a useful tool for teaching multimodal writing, place-based storytelling, community-engaged scholarship, and more.
 
 ### What you need to get started
+
 1. **A GitHub account:** GitHub is a place to store and host code and to provide customizable code templates. For our purposes here, it means that you can copy this project and, with a couple small tweaks, have a story up and running. Your interaction with the code is minimal (truly!), and the students only need to interact with a spreadsheet.
 2. **A Google account:** You or your students will need to copy the Google Sheet. I recommend keeping all the student spreadsheets in a centralized location so that they don't accidentally get deleted and so that you can control permissions.
 
 That's it!
 
 ### Step by step set-up guide
+
 Each scrolly story is contained in its own repository. Repeat these steps for as many stories as you intend to have your students create.
 
 #### 1. Create the GitHub repository.
+
 Click the "Use this Template" button in the top right corner of this page and select "Create a new repository." Give it a **name** when prompted. This should include only letters, numbers, underscores, and dashes. The **description** is optional, and you can change it later if you want. The repository will need to be **public** for the story to work.
 
 #### 2. Create the Google Sheet.
+
 1. Make a copy of this [Google Sheet](https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c) by going to File > Make a Copy.
 2. Give it at least a placeholder title so that you can distinguish it from the other stories you'll create.
 3. Publish it to the web: Go to File > Share > Publish to the Web. You can leave the default settings (Entire document, web page) as they are. Click the green Publish button when prompted.
@@ -32,52 +45,55 @@ Click the "Use this Template" button in the top right corner of this page and se
 5. Copy the link in the browser bar. (Important: do not use the Share link or the Publish link!)
 
 #### 3. Update the repository.
-1. In your GitHub repository, find the file `google-sheet.js` in the list of files for the project and click on it. You should see the contents of the file. 
-2. Click the pencil icon in the top right of the file contents and choose *Edit in place*.
+
+1. In your GitHub repository, find the file `google-sheet.js` in the list of files for the project and click on it. You should see the contents of the file.
+2. Click the pencil icon in the top right of the file contents and choose _Edit in place_.
 3. In the line under `const googleSheetURL = `, replace the URL between the single quotes with your Google Sheet URL. (Two warnings: 1. Be sure not to remove the single quotes or the semicolon at the end, and 2. Delete the existing URL before pasting yours in, rather than pasting over the highlighted URL. Otherwise GitHub will try to hyperlink the highlighted text with your new URL instead of replacing it.
-4. Press the green *Commit Changes* button at the top right.
+4. Press the green _Commit Changes_ button at the top right.
 
 #### 4. Publish your story using GitHub Pages.
+
 Pages is GitHub's built-in hosting tool. When you turn the Pages setting on, GitHub will create a website using the code in the repository. You can and should do this at the outset, rather than after you've finished your website. It will update automatically as your spreadsheet updates, and it's a good way to preview your content and make sure you don't have formatting errors before you're in too deep.
 
-1. In your new repository, click on the *Settings* tab/button beneath the search bar.
-2. Click on the *Pages* link under "Code and Automation" on the left sidebar.
-3. Under "Build and Deployment" change *Source* from *None* to *Main*, and keep the default / (root) setting, then press *Save*.
+1. In your new repository, click on the _Settings_ tab/button beneath the search bar.
+2. Click on the _Pages_ link under "Code and Automation" on the left sidebar.
+3. Under "Build and Deployment" change _Source_ from _None_ to _Main_, and keep the default / (root) setting, then press _Save_.
 4. This will publish your site, but it will take a few minutes to complete. Get a cup of coffee, then come back, refresh the browser, and the website URL of your story is displayed at the top of the page. It will be of the form `https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPOSITORY_NAME/`.
 5. Go to your new website and verify it matches the example provided by this repository.
 
 ### Editing guide
+
 At this point, your set-up is done and you're ready to add your content! Your live story will update as you edit your spreadsheet. You can find a complete guide to creating your scrolly story over in the [student tutorial](https://www.github.com/IRISSIUE/scrollytelling-tutorial), but here are the basics. Your sheet has two tabs: Story, for metadata like title and author, and Steps, for granular story content.
 
 #### Story
 
-| Column | Description |
-| --- | ------------ |
-| A: ScrollType | Ignore this -- this is a setting that's still in development. |
-| B: Title | Your primary title is styled as a large heading |
-| C: Subtitle | Your subtitle is styled as paragraph text. |
-| D: EndText | This appears at the end of your story and is optional. It's intended to be used as a call to action. |
+| Column                      | Description                                                                                                                                        |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A: ScrollType               | Ignore this -- this is a setting that's still in development.                                                                                      |
+| B: Title                    | Your primary title is styled as a large heading                                                                                                    |
+| C: Subtitle                 | Your subtitle is styled as paragraph text.                                                                                                         |
+| D: EndText                  | This appears at the end of your story and is optional. It's intended to be used as a call to action.                                               |
 | E: TextHorizontalPercentage | This allows you to customize how much of the page your text takes up in steps with media. The default is 40%, and the recommended range is 30-50%. |
-| F: Authors | This appears below your subtitle. It's styled as paragraph text and preceded by "By" in the live story. |
+| F: Authors                  | This appears below your subtitle. It's styled as paragraph text and preceded by "By" in the live story.                                            |
 
 #### Steps
 
-Select your media type in Column A, *ContentType*. For the next few columns, there are some small differences in the information you need depending on step type.
+Select your media type in Column A, _ContentType_. For the next few columns, there are some small differences in the information you need depending on step type.
 
-| Media Type | B: FilePath | C: AltText | D and E: Latitude/Longitude | F: ZoomLevel |
-| --- | ---- | ---- | ---- | ---- |
-| Maps | Leave blank | Describe what's visible on your map and what purpose it's serving in your narrative. | Add the coordinates for the center of your map. Make sure that you separate the coordinates into the two columns and delete the comma between them. Latitude is the first number, and longitude is the second number. | Choose how far in you want to zoom on the map. Zoom levels range from 0 to 18, and the higher the number, the more zoomed in you’ll be. For maps, a zoom level of 4 or 5 will show a whole region of the country. A zoom level of 13 or 14 will show detail at the level of streets and buildings. |
-| Images | Paste the URL to your image. (See below for details on hosting images.) | Describe the image and what purpose it's serving in your narrative. | Leave blank | Choose how far in you want to zoom on the image. Images don't need as high a zoom level as maps, and your image will get grainy if you zoom in too far. Choose a zoom level of 1 if you just want it to display as is. |
-| Videos | Paste the URL to your video. (See below for details on hosting videos.) | Describe the video and what purpose it's serving in your narrative. | Leave blank | Leave blank |
-| Text | Leave blank | Leave blank | Leave blank | Leave blank | Leave blank |
+| Media Type | B: FilePath                                                             | C: AltText                                                                           | D and E: Latitude/Longitude                                                                                                                                                                                           | F: ZoomLevel                                                                                                                                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Maps       | Leave blank                                                             | Describe what's visible on your map and what purpose it's serving in your narrative. | Add the coordinates for the center of your map. Make sure that you separate the coordinates into the two columns and delete the comma between them. Latitude is the first number, and longitude is the second number. | Choose how far in you want to zoom on the map. Zoom levels range from 0 to 18, and the higher the number, the more zoomed in you’ll be. For maps, a zoom level of 4 or 5 will show a whole region of the country. A zoom level of 13 or 14 will show detail at the level of streets and buildings. |
+| Images     | Paste the URL to your image. (See below for details on hosting images.) | Describe the image and what purpose it's serving in your narrative.                  | Leave blank                                                                                                                                                                                                           | Choose how far in you want to zoom on the image. Images don't need as high a zoom level as maps, and your image will get grainy if you zoom in too far. Choose a zoom level of 1 if you just want it to display as is.                                                                             |
+| Videos     | Paste the URL to your video. (See below for details on hosting videos.) | Describe the video and what purpose it's serving in your narrative.                  | Leave blank                                                                                                                                                                                                           | Leave blank                                                                                                                                                                                                                                                                                        |
+| Text       | Leave blank                                                             | Leave blank                                                                          | Leave blank                                                                                                                                                                                                           | Leave blank                                                                                                                                                                                                                                                                                        |
 
-All of your steps will require text. For maps, images, and videos, the text will display to the left of the media item. For the text content type, the text will take up the full width of the page. 
+All of your steps will require text. For maps, images, and videos, the text will display to the left of the media item. For the text content type, the text will take up the full width of the page.
 
 Text can be formatted using HTML. The simplest way is to use this [HTML editor](https://wysiwyghtml.com/) to format your text and generate the correct HTML. Format your content using the editor on the left side, and you'll see your HTML appear on the right side. Before you copy it over, press the "Compress HTML" button at the bottom of the HTML window. This ensures that there are no line breaks that will mess up the spreadsheet.
 
-**Hosting images:** Images can be hosted in your GitHub repository by uploading them to the **media** folder. If you go this route, your *FilePath* will be ./media/YOUR-FILE-NAME.jpg. If you don't want to go this route, you can link to images from anywhere on the web. However, be aware that using links that you don't control means that the project is vulnerable to link rot -- if the image you referenced is deleted or moves, it will be replaced with an empty grey box in the story.
+**Hosting images:** Images can be hosted in your GitHub repository by uploading them to the **media** folder. If you go this route, your _FilePath_ will be ./media/YOUR-FILE-NAME.jpg. If you don't want to go this route, you can link to images from anywhere on the web. However, be aware that using links that you don't control means that the project is vulnerable to link rot -- if the image you referenced is deleted or moves, it will be replaced with an empty grey box in the story.
 
-**Hosting videos:** Videos can also be hosted on GitHub in the same way, but you may run into file size issues. You can also link from services like YouTube and Vimeo. Make sure that you copy the URL from the *embed code* rather than from the browser bar or share link. 
+**Hosting videos:** Videos can also be hosted on GitHub in the same way, but you may run into file size issues. You can also link from services like YouTube and Vimeo. Make sure that you copy the URL from the _embed code_ rather than from the browser bar or share link.
 
 #### Troubleshooting errors
 
@@ -94,20 +110,23 @@ Occasionally, the story might load, but a specific piece of media might not. Her
 ### Classroom considerations
 
 #### Public scholarship and privacy
-For any public-facing student work, there are a few considerations to make sure you're complying with privacy regulations. [Public-facing work isn't inherently a violation of FERPA](https://digitalpedagogy.hcommons.org/introduction/but-ferpa/), but students should still have some agency in whether and how they're presenting themselves online. 
+
+For any public-facing student work, there are a few considerations to make sure you're complying with privacy regulations. [Public-facing work isn't inherently a violation of FERPA](https://digitalpedagogy.hcommons.org/introduction/but-ferpa/), but students should still have some agency in whether and how they're presenting themselves online.
+
 1. **Students should have a say in how or whether they identify themselves.** That definitely includes preferred names, but it might also include pennames, usernames, or collective attribution (for instance to a class rather than to individually named students).
 2. **Students should have the right to be forgotten.** After a class is over, students should be able to request that their work be anonymized or removed. There shouldn't be a requirement that their work is available in perpetuity.
 3. **Student work should be contextualized.** The work that students do in middle school, high school, or college may or may not reflect the character and caliber of work that they do later on. That doesn't mean it's less valuable or that it's unworthy of being shared! But student work should make clear the context in which it was produced.
 4. **Student work should never be publicly graded or evaluated.** That's a clear FERPA line. Student work can be shared, with their knowledge and consent, but instructor assessments of it cannot.
 
 #### Mobile responsiveness
-Many students -- and indeed, many public audiences -- access the internet primarily on their phones or tablets. This project is moderately responsive (that is, it adjusts its appearance based on screen size), although it's best viewed on a computer screen. On a phone, the text box should narrow so that text and content are both visible, and the interactive scrolling is fully functional. Rotating the phone screen will provide a better experience. 
 
-Because the story is created in Google Sheets, students can contribute via a smartphone, although the Google Sheets editing interface in the phone app can be a little bit challenging. Some students are adept at editing on their phones, and others will get frustrated. A possible workaround (with some solid pedagogy behind it) is to have students storyboard on paper and either delegate a group member to input the steps or take turns with any available computers. Much of the creative work of scrollytelling can (and maybe should) happen offline first. 
+Many students -- and indeed, many public audiences -- access the internet primarily on their phones or tablets. This project is moderately responsive (that is, it adjusts its appearance based on screen size), although it's best viewed on a computer screen. On a phone, the text box should narrow so that text and content are both visible, and the interactive scrolling is fully functional. Rotating the phone screen will provide a better experience.
+
+Because the story is created in Google Sheets, students can contribute via a smartphone, although the Google Sheets editing interface in the phone app can be a little bit challenging. Some students are adept at editing on their phones, and others will get frustrated. A possible workaround (with some solid pedagogy behind it) is to have students storyboard on paper and either delegate a group member to input the steps or take turns with any available computers. Much of the creative work of scrollytelling can (and maybe should) happen offline first.
 
 ### Classroom resources
 
-Here are some resources you might find helpful in the classroom (or for your own purposes!): 
+Here are some resources you might find helpful in the classroom (or for your own purposes!):
 
 - [Student scrollytelling tutorial](https://www.github.com/IRISSIUE/scrollytelling-tutorial)
 - [Finding media licensed for reuse](https://iris.siue.edu/public-domain-and-open-access-media/)
@@ -117,26 +136,31 @@ Here are some resources you might find helpful in the classroom (or for your own
 
 This project was developed by Dan Schreiber in Southern Illinois University Edwardsville's IRIS Center for Digital Humanities and Social Sciences, on behalf of the Community-Oriented Digital Engagement Scholars (CODES) program. CODES is generously funded by a grant from the Mellon Foundation.
 
-This project builds from the ["Leaflet Storymaps with Google Sheets"](https://www.github.com/HandsOnDataViz/leaflet-storymaps-with-google-sheets) model developed by Jack Dougherty and Ilia Ilyankou in [*Hands-On Data Visualization: Interactive Storytelling from Spreadsheets to Code*](www.handsondataviz.org) (O'Reilly, last updated 22 Dec. 2024). 
+This project builds from the ["Leaflet Storymaps with Google Sheets"](https://www.github.com/HandsOnDataViz/leaflet-storymaps-with-google-sheets) model developed by Jack Dougherty and Ilia Ilyankou in [_Hands-On Data Visualization: Interactive Storytelling from Spreadsheets to Code_](www.handsondataviz.org) (O'Reilly, last updated 22 Dec. 2024).
 
 This project also uses the following libraries and tools:
 
 - Scrollama: A library for creating scrollytelling experiences.
+
   - Website: [Scrollama](https://github.com/russellsamora/scrollama)
   - License: MIT
-    
+
 - Intersection Observer: A polyfill for the Intersection Observer API.
+
   - Website: [Intersection Observer](https://github.com/w3c/IntersectionObserver)
   - License: W3C
-    
+
 - Leaflet: An open-source JavaScript library for interactive maps.
+
   - Website: [Leaflet](https://leafletjs.com/)
   - License: BSD-2-Clause
 
 - PapaParse: A powerful CSV parser for JavaScript.
+
   - Website: [PapaParse](https://www.papaparse.com/)
   - License: MIT
 
 - DOMPurify: A DOM-only, super-fast, uber-tolerant XSS sanitizer for HTML, MathML, and SVG.
+
   - Website: [DOMPurify](https://github.com/cure53/DOMPurify)
   - License: Apache-2.0
