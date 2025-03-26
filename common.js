@@ -100,15 +100,39 @@ export class StepData {
   }
 
   validate(actionTextIfError) {
+    this.validateContentType(actionTextIfError);
+
+    this.validateText(actionTextIfError);
+    this.validateAltText(actionTextIfError);
+
+    this.validateLatitude(actionTextIfError);
+    this.validateLongitude(actionTextIfError);
+
+    this.validateZoomLevel(actionTextIfError);
+  }
+
+  validateText(actionTextIfError) {
+    if (!doesValueExist(this.text)) {
+      throw new ScrollyError(actionTextIfError, "Text is a required field");
+    }
+  }
+
+  validateContentType(actionTextIfError) {
     const validContentTypes = ["image", "map", "video", "text"];
     if (!validContentTypes.includes(this.contentType)) {
+      let invalidContentTypeString = `Invalid contentType: "${this.contentType}"`;
+      if (this.contentType === "") {
+        invalidContentTypeString = "No contentType specified";
+      }
       throw new ScrollyError(
         actionTextIfError,
-        `Invalid contentType: "${this.contentType}"`,
+        invalidContentTypeString,
         `Valid contentType values are: ${validContentTypes.join(", ")}`
       );
     }
+  }
 
+  validateAltText(actionTextIfError) {
     if (
       this.contentType !== "text" &&
       (!this.altText || this.altText.length === 0)
@@ -116,10 +140,12 @@ export class StepData {
       throw new ScrollyError(
         actionTextIfError,
         `AltText is a required field`,
-        `Accessiblity requires AltText to be set for all content`
+        `AltText is needed to explain what an image, video, or map is displaying, for those with visual impairments`
       );
     }
+  }
 
+  validateLatitude(actionTextIfError) {
     if (
       this.contentType === "map" &&
       (!isNumber(this.latitude) ||
@@ -132,6 +158,9 @@ export class StepData {
         'Latitude must be between -90.0 and 90.0 for content type "map"'
       );
     }
+  }
+
+  validateLongitude(actionTextIfError) {
     if (
       this.contentType === "map" &&
       (!isNumber(this.longitude) ||
@@ -144,11 +173,16 @@ export class StepData {
         'Longitude must be between -180.0 and 180.0 for content type "map"'
       );
     }
+  }
 
-    if (doesValueExist(this.zoomLevel) && !isNumber(this.zoomLevel)) {
+  validateZoomLevel(actionTextIfError) {
+    if (
+      this.contentType === "map" &&
+      (!doesValueExist(this.zoomLevel) || !isNumber(this.zoomLevel))
+    ) {
       throw new ScrollyError(
         actionTextIfError,
-        `ZoomLevel of ${this.zoomLevel} is invalid`,
+        `ZoomLevel of "${this.zoomLevel}" is invalid`,
         "ZoomLevel must be a number"
       );
     }
