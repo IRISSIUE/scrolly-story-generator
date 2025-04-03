@@ -154,7 +154,7 @@ function createStepElement(stepData, stepNumber) {
   if (stepData.zoomLevel) {
     stepElement.dataset.zoomLevel = stepData.zoomLevel;
   }
-  stepElement.innerHTML = `<p class="step-content">${stepData.text}</p>`;
+  stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
 
   return stepElement;
 }
