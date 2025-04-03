@@ -84,11 +84,11 @@ map {
 
 .step {
   margin: 0rem 1rem 10rem 0rem;
-  color: #d8d1d1;
   height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 30%;
 }
 
 .step-content {
@@ -104,7 +104,7 @@ map {
 }
 
 .step.is-active {
-  color: #3b3b3b;
+  opacity: 100%;
 }
 
 .step p {
