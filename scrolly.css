@@ -88,12 +88,13 @@ map {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 30%;
+  opacity: 0%;
 }
 
 .step-content {
-  background-color: #0001;
+  background-color: #bde6ed;
   padding: 1rem;
+  filter: drop-shadow(lightgray 1rem 1rem 10px);
 }
 
 .step:first-child {
