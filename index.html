@@ -9,6 +9,9 @@
 
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="scrolly.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Forum&display=swap" rel="stylesheet">
 
     <!-- Scrollama is a library for creating scrollytelling experiences, and depends on intersection observer -->
     <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
@@ -43,9 +46,13 @@
       <section id="intro">
         <h1 id="story-title">Scrolly Story</h1>
         <p id="subtitle"></p>
-        <p>By <span id="authors"></span></p>
+        <p id="byline">By <span id="authors"></span></p>
+        <br>
+        <div id="mobile-warning">
+          <p></p>This content is designed to be viewed in landscape. If you're on a phone or tablet, try rotating your screen for a better viewing experience.</p>
+        </div>
       </section>
-
+      
       <!-- The error dialog is only displayed when there is an error-->
       <section id="error-container">
         <div id="error-dialog">
