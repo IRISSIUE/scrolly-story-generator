@@ -42,22 +42,22 @@ Click the "Use this Template" button in the top right corner of this page and se
 2. Give it at least a placeholder title so that you can distinguish it from the other stories you'll create.
 3. Publish it to the web: Go to File > Share > Publish to the Web. You can leave the default settings (Entire document, web page) as they are. Click the green Publish button when prompted.
 4. Share it so that anyone with the link can view the document.
-5. Copy the link in the browser bar. (Important: do not use the Share link or the Publish link!)
+5. Copy the link in the browser bar to be used in the next step. (Important: do not use the Share link or the Publish link!)
 
 #### 3. Update the repository.
 
 1. In your GitHub repository, find the file `google-sheet.js` in the list of files for the project and click on it. You should see the contents of the file.
-2. Click the pencil icon in the top right of the file contents and choose _Edit in place_.
-3. In the line under `const googleSheetURL = `, replace the URL between the single quotes with your Google Sheet URL. (Two warnings: 1. Be sure not to remove the single quotes or the semicolon at the end, and 2. Delete the existing URL before pasting yours in, rather than pasting over the highlighted URL. Otherwise GitHub will try to hyperlink the highlighted text with your new URL instead of replacing it.
+2. Click the down arrow icon in the top right of the file contents and choose _Edit in place_.
+3. In the line under `const googleSheetURL = `, replace the URL between the quotes with your Google Sheet URL. (Two warnings: 1. Be sure not to remove the quotes or the semicolon at the end, and 2. Delete the existing URL before pasting yours in, rather than pasting over the highlighted URL. Otherwise GitHub will try to hyperlink the highlighted text with your new URL instead of replacing it.)
 4. Press the green _Commit Changes_ button at the top right.
 
 #### 4. Publish your story using GitHub Pages.
 
-Pages is GitHub's built-in hosting tool. When you turn the Pages setting on, GitHub will create a website using the code in the repository. You can and should do this at the outset, rather than after you've finished your website. It will update automatically as your spreadsheet updates, and it's a good way to preview your content and make sure you don't have formatting errors before you're in too deep.
+cPages is GitHub's built-in hosting tool. When you turn the Pages setting on, GitHub will create a website using the code in the repository. You can and should do this at the outset, rather than after you've finished your website. It will update automatically as your spreadsheet changes, and it's a good way to preview your content and make sure you don't have formatting errors before you're in too deep.
 
 1. In your new repository, click on the _Settings_ tab/button beneath the search bar.
 2. Click on the _Pages_ link under "Code and Automation" on the left sidebar.
-3. Under "Build and Deployment" change _Source_ from _None_ to _Main_, and keep the default / (root) setting, then press _Save_.
+3. Under "Build and Deployment" change _Branch_ from _None_ to _Main_, and keep the default / (root) setting, then press _Save_.
 4. This will publish your site, but it will take a few minutes to complete. Get a cup of coffee, then come back, refresh the browser, and the website URL of your story is displayed at the top of the page. It will be of the form `https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPOSITORY_NAME/`.
 5. Go to your new website and verify it matches the example provided by this repository.
 
