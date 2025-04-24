@@ -19,6 +19,12 @@ function displayStickyMap(id, lat, long, zoom) {
     removeCurrentLeafletMap();
   }
 
+  if (zoom > 18) {
+    zoom = 18; // max zoom level for leaflet maps
+  } else if (zoom < 1) {
+    zoom = 1; // min zoom level for leaflet maps
+  }
+
   if (!leafletMap) {
     leafletMapId = id;
     createStickyMap(id, lat, long, zoom);
