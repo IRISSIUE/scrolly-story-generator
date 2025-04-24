@@ -8,6 +8,16 @@
   padding: 1rem;
 }
 
+/* increase margin for larger screens */
+@media (min-width: 1024px) {
+  .scrolly-container {
+    margin: 2rem;
+  }
+  .sticky-container {
+    margin-left: 1rem;
+  }
+}
+
 .scrolly-container > * {
   -webkit-box-flex: 1;
   -ms-flex: 1;
@@ -94,7 +104,8 @@ map {
 .step-content {
   background-color: #bde6ed;
   padding: 1rem;
-  filter: drop-shadow(lightgray 1rem 1rem 10px);
+  filter: drop-shadow(lightgray 0.5rem 0.5rem 10px);
+  font-size: 1.25rem;
 }
 
 .step:first-child {
@@ -106,6 +117,7 @@ map {
 
 .step.is-active {
   opacity: 100%;
+  transition: opacity 1s linear;
 }
 
 .step p {
