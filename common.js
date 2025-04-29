@@ -192,7 +192,7 @@ export class StepData {
 export function validateStepDataArray(stepDataArray, actionTextIfError) {
   var step = 1;
   stepDataArray.forEach((stepData) => {
-    stepData.validate(actionTextIfError + ", step " + step);
+    stepData.validate(actionTextIfError + ", step " + step + " (line " +  (step + 1) + ")");
     step++;
   });
 }

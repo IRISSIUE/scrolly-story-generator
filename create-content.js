@@ -15,7 +15,7 @@ export async function createAllStoryScrollyContentInHTML() {
     );
     validateStepDataArray(
       allScrollyData.stepData,
-      "Reading Google Sheet steps tab (2nd sheet)"
+      "Reading Google Sheet Steps Tab (2nd sheet)"
     );
     createStoryContentInHtml(allScrollyData.storyData);
     createStepsContentInHtml(allScrollyData.stepData);
