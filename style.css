@@ -31,8 +31,9 @@ a {
 }
 
 #story-title {
-  font-family: "Bebas Neue", sans-serif;
-  font-weight: 400;
+  font-family: "Josefin Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
   font-style: normal;
   font-size: 3rem;
   margin: 2rem auto 0.5rem auto;
