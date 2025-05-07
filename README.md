@@ -38,7 +38,7 @@ Click the "Use this Template" button in the top right corner of this page and se
 
 #### 2. Create the Google Sheet.
 
-1. Make a copy of this [Google Sheet](https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c) by going to File > Make a Copy.
+1. Make a copy of this [Google Sheet](https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c/copy).
 2. Give it at least a placeholder title so that you can distinguish it from the other stories you'll create.
 3. Publish it to the web: Go to File > Share > Publish to the Web. You can leave the default settings (Entire document, web page) as they are. Click the green Publish button when prompted.
 4. Share it so that anyone with the link can view the document.
