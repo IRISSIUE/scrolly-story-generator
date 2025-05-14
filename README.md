@@ -72,7 +72,7 @@ At this point, your set-up is done and you're ready to add your content! Your li
 | A: ScrollType               | Ignore this -- this is a setting that's still in development.                                                                                      |
 | B: Title                    | Your primary title is styled as a large heading                                                                                                    |
 | C: Subtitle                 | Your subtitle is styled as paragraph text.                                                                                                         |
-| D: EndText                  | This appears at the end of your story and is optional. It's intended to be used as a call to action.                                               |
+| D: EndText                  | This appears at the end of your story and is optional. By default, it's set as a Creative Commons license.                                         |
 | E: TextHorizontalPercentage | This allows you to customize how much of the page your text takes up in steps with media. The default is 40%, and the recommended range is 30-50%. |
 | F: Authors                  | This appears below your subtitle. It's styled as paragraph text and preceded by "By" in the live story.                                            |
 
@@ -115,8 +115,9 @@ For any public-facing student work, there are a few considerations to make sure 
 
 1. **Students should have a say in how or whether they identify themselves.** That definitely includes preferred names, but it might also include pennames, usernames, or collective attribution (for instance to a class rather than to individually named students).
 2. **Students should have the right to be forgotten.** After a class is over, students should be able to request that their work be anonymized or removed. There shouldn't be a requirement that their work is available in perpetuity.
-3. **Student work should be contextualized.** The work that students do in middle school, high school, or college may or may not reflect the character and caliber of work that they do later on. That doesn't mean it's less valuable or that it's unworthy of being shared! But student work should make clear the context in which it was produced.
-4. **Student work should never be publicly graded or evaluated.** That's a clear FERPA line. Student work can be shared, with their knowledge and consent, but instructor assessments of it cannot.
+3. **Student work should have a clear license on it.** Our default is a Creative Commons CC-BY-ND license, which requires that if it's reused, it must be attributed to its original author and no derivative works may be created. You (or your students) might prefer a more restrictive license. By default, the CC-BY-ND license appears in the EndText column in the Story tab.
+4. **Student work should be contextualized.** The work that students do in middle school, high school, or college may or may not reflect the character and caliber of work that they do later on. That doesn't mean it's less valuable or that it's unworthy of being shared! But student work should make clear the context in which it was produced.
+5. **Student work should never be publicly graded or evaluated.** That's a clear FERPA line. Student work can be shared, with their knowledge and consent, but instructor assessments of it cannot.
 
 #### Mobile responsiveness
 
