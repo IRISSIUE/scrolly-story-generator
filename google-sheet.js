@@ -14,7 +14,7 @@ import { ScrollyData, StoryData, StepData, ScrollyError } from "./common.js";
 // Also, you must Share the sheet so that anyone with a link can access it
 //     Share button at top right of sheet -> General Access -> Anyone with the link -> Viewer
 const googleSheetURL =
-  "https://docs.google.com/spreadsheets/d/1Nkq7DLecFxgwSs9tC0f_k0tTNTHPrsV3Bqf9L98aSuQ";
+  "https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c";
 
 // An API Key is required to read a google sheet from an application. It is generated at https://console.developers.google.com
 // and if you plan to publish this scrolly story on your own standalone site, you will need to generate your own key.
@@ -76,6 +76,7 @@ export async function fetchAllDataFromGoogleSheet() {
     throw error;
   }
 }
+
 function throwErrorFromGoogleSheetResponse(responseError) {
   throwMissingSheetNameErrorIfExists(responseError);
 
@@ -113,48 +114,43 @@ function convertGoogleSheetDataToScrollyData(sheetsArray) {
 
 function convertGoogleSheetDataToStoryData(values) {
   // There's only one (valid) row of data in the Story sheet, on the 2nd row (first row is header)
-  const [
-    scrollType,
-    title,
-    subtitle,
-    endText,
-    textHorizontalPercentage,
-    authors,
-    footer,
-  ] = values[1];
+  const headers = values[0];
+  const data = values[1];
 
+  // Create a mapping from header name to column index
+  const colIndex = {};
+  headers.forEach((header, i) => {
+    colIndex[header.trim().toLowerCase()] = i;
+  });
+
+  // Use header names to extract values
   return new StoryData(
-    scrollType,
-    title,
-    subtitle,
-    endText,
-    textHorizontalPercentage,
-    authors,
-    footer
+    data[colIndex["scrolltype"]],
+    data[colIndex["title"]],
+    data[colIndex["subtitle"]],
+    data[colIndex["endtext"]],
+    data[colIndex["texthorizontalpercentage"]],
+    data[colIndex["authors"]],
+    data[colIndex["footer"]]
   );
 }
 
 function convertGoogleSheetDataToStepDataArray(values) {
-  values.shift(); // remove the header row  TODO: Catch error if no header row & verify header row is valid
+  const headers = values.shift();
+  const colIndex = {};
+  headers.forEach((header, i) => {
+    colIndex[header.trim().toLowerCase()] = i;
+  });
 
   const stepDataArray = values.map((row) => {
-    const [
-      contentType,
-      filePath,
-      altText,
-      latitude,
-      longitude,
-      zoomLevel,
-      text,
-    ] = row;
     return new StepData(
-      contentType,
-      filePath,
-      altText,
-      latitude,
-      longitude,
-      zoomLevel,
-      text
+      row[colIndex["contenttype"]],
+      row[colIndex["filepath"]],
+      row[colIndex["alttext"]],
+      row[colIndex["latitude"]],
+      row[colIndex["longitude"]],
+      row[colIndex["zoomlevel"]],
+      row[colIndex["text"]]
     );
   });
   return stepDataArray;
