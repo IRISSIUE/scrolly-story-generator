@@ -88,6 +88,7 @@ export class StepData {
     latitude,
     longitude,
     zoomLevel,
+    imageOrientation,
     text
   ) {
     this.contentType = DOMPurify.sanitize(contentType);
@@ -96,6 +97,7 @@ export class StepData {
     this.latitude = DOMPurify.sanitize(latitude);
     this.longitude = DOMPurify.sanitize(longitude);
     this.zoomLevel = DOMPurify.sanitize(zoomLevel);
+    this.imageOrientation = DOMPurify.sanitize(imageOrientation);
     this.text = DOMPurify.sanitize(text);
   }
 
@@ -192,7 +194,9 @@ export class StepData {
 export function validateStepDataArray(stepDataArray, actionTextIfError) {
   var step = 1;
   stepDataArray.forEach((stepData) => {
-    stepData.validate(actionTextIfError + ", step " + step + " (line " +  (step + 1) + ")");
+    stepData.validate(
+      actionTextIfError + ", step " + step + " (line " + (step + 1) + ")"
+    );
     step++;
   });
 }

@@ -150,6 +150,7 @@ function convertGoogleSheetDataToStepDataArray(values) {
       row[colIndex["latitude"]],
       row[colIndex["longitude"]],
       row[colIndex["zoomlevel"]],
+      row[colIndex["imageorientation"]],
       row[colIndex["text"]]
     );
   });

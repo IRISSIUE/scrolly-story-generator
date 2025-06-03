@@ -51,10 +51,15 @@
 
 .sticky-image-container img {
   padding: 0rem;
-  object-fit: cover;
   object-position: center;
   width: 100%;
   height: 100%;
+  /* by default, "object-fit: cover" works better for images that are more horizontally oriented,
+   fits more of the horizontal width of the image (though not entirely -- we don't display the full
+   width, because it will be letterboxed if it doesn't fit).
+   This will switch to "object-fit: contain" when the user specifices the image is more vertically
+   oriented, which will ensure the full height of the image is displayed */
+  object-fit: cover; 
 }
 
 .sticky-map-container {

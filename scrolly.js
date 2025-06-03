@@ -151,10 +151,20 @@ function displayStickyImage(stepData) {
       img.src = stepData.filePath;
       img.alt = stepData.altText;
       img.style.opacity = 1;
+
+      setImageOrientation(img, stepData.imageOrientation);
     }, transitionInMilliseconds);
   }
   if (stepData.zoomLevel) {
     img.style.transform = `scale(${stepData.zoomLevel})`;
+  }
+}
+
+function setImageOrientation(img, imageOrientation) {
+  if (imageOrientation && imageOrientation.toLowerCase() === "vertical") {
+    img.style.objectFit = "contain"; // display more of the vertical space of the image
+  } else {
+    img.style.objectFit = "cover"; // display more of the horizontal space of the image
   }
 }
 

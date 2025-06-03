@@ -1,5 +1,5 @@
 /*
-  create-content.js creates the HTML for a scrolly story from on story and step data 
+  create-content.js creates the HTML for a scrolly story from story-level and step-level data 
   imported from elsewhere, like a google sheet.
   See index.html for the expected structure of the HTML 
 */
@@ -153,6 +153,9 @@ function createStepElement(stepData, stepNumber) {
   }
   if (stepData.zoomLevel) {
     stepElement.dataset.zoomLevel = stepData.zoomLevel;
+  }
+  if (stepData.imageOrientation) {
+    stepElement.dataset.imageOrientation = stepData.imageOrientation;
   }
   stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
 
