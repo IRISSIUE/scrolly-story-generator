@@ -87,7 +87,7 @@
 
 .sticky-container video,
 map {
-  /* eases transition when zoomming an image or video */
+  /* eases transition when zooming an image or video */
   transition: opacity 0.5s linear;
 }
 
@@ -107,7 +107,6 @@ map {
 }
 
 .step-content {
-  background-color: #bde6ed;
   padding: 1rem;
   filter: drop-shadow(lightgray 0.5rem 0.5rem 10px);
   font-size: 1.25rem;

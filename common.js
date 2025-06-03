@@ -20,6 +20,9 @@ export class StoryData {
     endText,
     textHorizontalPercentage,
     authors,
+    backgroundColor,
+    scrollBoxBackgroundColor,
+    scrollBoxTextColor,
     footer
   ) {
     this.scrollType = DOMPurify.sanitize(scrollType);
@@ -33,6 +36,11 @@ export class StoryData {
     this.textHorizontalPercentage = stripPercentageCharIfExists(
       this.textHorizontalPercentage
     );
+    this.backgroundColor = DOMPurify.sanitize(backgroundColor);
+    this.scrollBoxBackgroundColor = DOMPurify.sanitize(
+      scrollBoxBackgroundColor
+    );
+    this.scrollBoxTextColor = DOMPurify.sanitize(scrollBoxTextColor);
     this.footer = DOMPurify.sanitize(footer);
   }
 

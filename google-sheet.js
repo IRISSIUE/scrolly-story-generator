@@ -131,6 +131,9 @@ function convertGoogleSheetDataToStoryData(values) {
     data[colIndex["endtext"]],
     data[colIndex["texthorizontalpercentage"]],
     data[colIndex["authors"]],
+    data[colIndex["backgroundcolor"]],
+    data[colIndex["scrollboxbackgroundcolor"]],
+    data[colIndex["scrollboxtextcolor"]],
     data[colIndex["footer"]]
   );
 }

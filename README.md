@@ -69,12 +69,24 @@ At this point, your set-up is done and you're ready to add your content! Your li
 
 | Column                      | Description                                                                                                                                        |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A: ScrollType               | Ignore this -- this is a setting that's still in development.                                                                                      |
-| B: Title                    | Your primary title is styled as a large heading                                                                                                    |
-| C: Subtitle                 | Your subtitle is styled as paragraph text.                                                                                                         |
-| D: EndText                  | This appears at the end of your story and is optional. By default, it's set as a Creative Commons license.                                         |
-| E: TextHorizontalPercentage | This allows you to customize how much of the page your text takes up in steps with media. The default is 40%, and the recommended range is 30-50%. |
-| F: Authors                  | This appears below your subtitle. It's styled as paragraph text and preceded by "By" in the live story.                                            |
+| ScrollType               | Ignore this -- this is a setting that's still in development.                                                                                      |
+| Title                    | Your primary title is styled as a large heading                                                                                                    |
+| Subtitle                 | Your subtitle is styled as paragraph text.                                                                                                         |
+| EndText                  | This appears at the end of your story and is optional. By default, it's set as a Creative Commons license.                                         |
+| TextHorizontalPercentage | This allows you to customize how much of the page your text takes up in steps with media. The default is 33%, and the recommended range is 30-50%. |
+| Authors                  | This appears below your subtitle. It's styled as paragraph text and preceded by "By" in the live story.  | 
+| BackgroundColor          | The background color to apply to the entire documents. See below for valid color values  |
+| ScrollBoxBackgroundColor | The background color to apply to the scrolling text box. See below for valid color values  |
+| ScrollBoxTextColor       | The color to apply to the text of the scrolling text box. See below for valid color values  |
+
+##### Colors
+Colors can be specified using one of the following formats:
+1. A color name in english. There are 16 basic color names: aqua, black, blue, fuchsia, gray, green, lime, maroon, navy, olive, purple, red, silver, teal, white, and yellow, plus many other additional named colors, available at https://www.w3schools.com/cssref/css_colors.php
+2. A Hexdecimal value for a color, of the format "#RRGGBB", where each RR, GG, and BB value is between 00 and FF, corresponding to how much of that color (Red, Green, Blue) makes up the desired color. So "#0000FF" is blue because the blue component is at its highest value and the others are set to 0.
+3. An RGB value of the format "rgb(red-value, green-value, blue-value)", where each value is a number between 1 and 255.  So "rgb(0, 0, 255) is blue. 
+
+The named colors are not usually very pleasing to the eye, so it's recommended to use a color picker to find good colors with exact RGB values and use the Hexidecimal or RGB formats to specify a color. There are many color pickers on the web, such as https://www.w3schools.com/colors/colors_picker.asp.
+
 
 #### Steps
 

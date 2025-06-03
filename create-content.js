@@ -26,6 +26,8 @@ export async function createAllStoryScrollyContentInHTML() {
     setHorizontalWidthOfTextAndStickyContent(
       allScrollyData.storyData.textHorizontalPercentage
     );
+
+    applyGlobalStyles(allScrollyData.storyData);
   } catch (scrollyError) {
     displayThenThrowError(scrollyError);
   }
@@ -34,6 +36,33 @@ export async function createAllStoryScrollyContentInHTML() {
 /*
     Story Level content
 */
+
+function applyGlobalStyles(storyData) {
+  if (storyData.backgroundColor && storyData.backgroundColor !== "") {
+    const body = document.querySelector("body");
+    body.style.backgroundColor = storyData.backgroundColor;
+  }
+
+  applyTextBoxStyles(
+    storyData.scrollBoxBackgroundColor,
+    storyData.scrollBoxTextColor
+  );
+}
+
+function applyTextBoxStyles(bgColor, textColor) {
+  const stepContents = document.querySelectorAll(".step-content");
+  if (bgColor && bgColor !== "") {
+    stepContents.forEach((el) => {
+      el.style.backgroundColor = bgColor;
+    });
+  }
+  if (textColor && textColor !== "") {
+    stepContents.forEach((el) => {
+      el.style.color = textColor;
+    });
+  }
+}
+
 // export for testing only
 export function createStoryContentInHtml(storyData) {
   const storyTitle = document.getElementById("story-title");
