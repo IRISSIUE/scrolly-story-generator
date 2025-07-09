@@ -33,8 +33,8 @@ const sheetNames = ["Story", "Steps"];
 const storyIndex = 0;
 const stepsIndex = 1;
 
-const spreadsheetId = extractSpreadsheetIDFromURL(googleSheetURL);
-function extractSpreadsheetIDFromURL(url) {
+const spreadsheetId = extractIDFromGoogleSheetURL(googleSheetURL);
+function extractIDFromGoogleSheetURL(url) {
   try {
     return url.match(/\/d\/([a-zA-Z0-9-_]+)/)[1];
   } catch (error) {
@@ -55,15 +55,16 @@ function createGoogleSheetsAPIEndpoint() {
   return `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values:batchGet?${rangesParameter}&key=${googleApiKey}`;
 }
 
-// Function to fetch data from Google Sheets
-export async function fetchAllDataFromGoogleSheet() {
+export async function fetchScrollyData() {
+  return await fetchDataFromGoogleSheet();
+}
+
+async function fetchDataFromGoogleSheet() {
   try {
     const response = await fetch(apiEndpoint);
     const responseJson = await response.json();
-    if (!response.ok) {
-      throwErrorFromGoogleSheetResponse(responseJson.error);
-    }
 
+    throwGoogleSheetErrorIfExists(!response.ok, responseJson);
     return convertGoogleSheetDataToScrollyData(responseJson);
   } catch (error) {
     // Convert error to ScrollyError if it is not already
@@ -77,27 +78,39 @@ export async function fetchAllDataFromGoogleSheet() {
   }
 }
 
-function throwErrorFromGoogleSheetResponse(responseError) {
-  throwMissingSheetNameErrorIfExists(responseError);
+export function throwGoogleSheetErrorIfExists(hasError, responseJson) {
+  const error = responseJson.error;
 
-  throw new ScrollyError(
-    "Fetching data from Google Sheet " + googleSheetURL,
-    responseError.message
-  );
+  // Check missing sheet name first so a message specific to that can be
+  // thrown before more generic error messages
+  throwErrorIfSpreadsheetIsMissingSheetNames(error, sheetNames);
+
+  if (hasError) {
+    let errorMessage = error.message;
+    if (error.code === 404) {
+      errorMessage = "Could not find the data file";
+    }
+    throw new ScrollyError(
+      "Fetching data from Google Sheet " + googleSheetURL,
+      errorMessage
+    );
+  }
 }
 
-function throwMissingSheetNameErrorIfExists(responseError) {
-  sheetNames.forEach((sheetName) => {
-    if (
-      responseError.message.includes(sheetName) &&
-      responseError.message.includes("Unable to parse range")
-    ) {
-      throw new ScrollyError(
-        "Fetching data from Google Sheet " + googleSheetURL,
-        `Sheet name "${sheetName}" not found in the Google Sheet.`
-      );
-    }
-  });
+function throwErrorIfSpreadsheetIsMissingSheetNames(responseError, sheetNames) {
+  if (responseError) {
+    sheetNames.forEach((sheetName) => {
+      if (
+        responseError.message.includes(sheetName) &&
+        responseError.message.includes("Unable to parse range")
+      ) {
+        throw new ScrollyError(
+          "Fetching data from Google Sheet " + googleSheetURL,
+          `Sheet name "${sheetName}" not found in the Google Sheet.`
+        );
+      }
+    });
+  }
 }
 
 function convertGoogleSheetDataToScrollyData(sheetsArray) {

@@ -3,19 +3,19 @@
   imported from elsewhere, like a google sheet.
   See index.html for the expected structure of the HTML 
 */
-import { fetchAllDataFromGoogleSheet } from "./google-sheet.js";
+import { fetchScrollyData } from "./google-sheet.js";
 import { validateStepDataArray } from "./common.js";
 import { displayThenThrowError } from "./common.js";
 
 export async function createAllStoryScrollyContentInHTML() {
   try {
-    const allScrollyData = await fetchAllDataFromGoogleSheet();
+    const allScrollyData = await fetchScrollyData();
     allScrollyData.storyData.validate(
-      "Reading Google Sheet story tab (1st sheet)"
+      "Reading Story data from file (1st sheet)"
     );
     validateStepDataArray(
       allScrollyData.stepData,
-      "Reading Google Sheet Steps Tab (2nd sheet)"
+      "Reading Step data from file (2nd sheet)"
     );
     createStoryContentInHtml(allScrollyData.storyData);
     createStepsContentInHtml(allScrollyData.stepData);
