@@ -1,8 +1,8 @@
-import { throwGoogleSheetErrorIfExists } from "../google-sheet.js";
+import { throwErrorIfGoogleSheetError } from "../fetch-story-data.js";
 import { ScrollyError } from "../common.js";
 
 describe("Google Sheet Tests", () => {
-  describe("throwGoogleSheetErrorIfExists", () => {
+  describe("throwErrorIfGoogleSheetError", () => {
     let responseJson =
       it("should not throw error if response is successful", () => {
         const hasError = false;
@@ -15,7 +15,7 @@ describe("Google Sheet Tests", () => {
 
         // Test that the function does NOT throw an error
         expect(() => {
-          throwGoogleSheetErrorIfExists(hasError, responseJson);
+          throwErrorIfGoogleSheetError(hasError, responseJson);
         }).to.not.throw();
       });
 
@@ -28,7 +28,7 @@ describe("Google Sheet Tests", () => {
       };
 
       expect(() => {
-        throwGoogleSheetErrorIfExists(hasError, responseJson);
+        throwErrorIfGoogleSheetError(hasError, responseJson);
       }).to.throw(ScrollyError, "Test error message");
     });
 
@@ -42,7 +42,7 @@ describe("Google Sheet Tests", () => {
       };
 
       expect(() => {
-        throwGoogleSheetErrorIfExists(hasError, responseJson);
+        throwErrorIfGoogleSheetError(hasError, responseJson);
       }).to.throw(ScrollyError, "Could not find the data file");
     });
   });

@@ -1,63 +1,22 @@
 /*
-  google-sheet.js fetches data from a Google Sheet and converts it to ScrollyData,
-  so the HTML page can be created with the data.
+  fetch-story-data.js fetches data from a spreadsheet, currently either an excel spreadsheet on the
+  server in /data/StoryData.xlsx, or if that doesn't exist, the Google sheet defined in google-sheet-config.js
+
+  It converts the data to ScrollyData, so the HTML page can be created with the data.
 */
 
 import { ScrollyData, StoryData, StepData, ScrollyError } from "./common.js";
+import {
+  googleSheetURL,
+  googleApiKey,
+  extractIDFromGoogleSheetURL,
+} from "./google-sheet-config.js";
 
-// The Google Sheet below is a template. You can copy it to your Google Drive and use it to create your own scroll story.
-// Use the URL from the browser address bar replacing the one below.
-// Note that you must publish this sheet to the web for it to be accessible by the Google Sheets API.
-// so it can be read by this app.
-// Google Sheet File menu -> Share-> Publish to Web -> Publish Entire Document as Web Page
-//     (NOTE: This is the Google Sheet File Menu, not the browser File menu, you may have to expand the
-//     Menu bar at the top right up arrow to see the Sheets menus)
-// Also, you must Share the sheet so that anyone with a link can access it
-//     Share button at top right of sheet -> General Access -> Anyone with the link -> Viewer
-const googleSheetURL =
-  "https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c";
-
-// An API Key is required to read a google sheet from an application. The one below is for this version
-// of the application, you will need to generate your own key if you plan to publish this scrolly story on
-// your own standalone site.
-// To generate your own key:
-// 1. Go to https://console.developers.google.com
-// 2. Create a new project with unique name (don't need a Parent Organization)
-// 3. Enable APIs and Services
-// 4. Search for Google Sheets API, click on it and then enable it
-// 5. Choose Credentials from the left menu
-// 6. Click on Create Credentials at the top menu bar then API Key
-// 7. Restrict the key under API restrictions and restrict to Google Sheets API
-// 7. Copy the key and replace the one below
-const googleApiKey = "AIzaSyDY8bg45rGLpL4UsIKsDWh0bVec6wueFHs";
+const excelFilePath = "data/StoryData.xlsx";
 
 const sheetNames = ["Story", "Steps"];
 const storyIndex = 0;
 const stepsIndex = 1;
-
-const spreadsheetId = extractIDFromGoogleSheetURL(googleSheetURL);
-function extractIDFromGoogleSheetURL(url) {
-  try {
-    return url.match(/\/d\/([a-zA-Z0-9-_]+)/)[1];
-  } catch (error) {
-    return "InvalidGoogleSheetURL";
-  }
-}
-
-const apiEndpoint = createGoogleSheetsAPIEndpoint(spreadsheetId, googleApiKey);
-function createGoogleSheetsAPIEndpoint() {
-  var rangesParameter = ""; // each range in a google sheet is a sheet (tab) name
-  sheetNames.map((sheetName, i) => {
-    rangesParameter += `ranges=${sheetName}`;
-    if (i < sheetNames.length - 1) {
-      rangesParameter += "&";
-    }
-  });
-
-  return `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values:batchGet?${rangesParameter}&key=${googleApiKey}`;
-}
-
-const excelFilePath = "data/StoryData.xlsx";
 
 export async function fetchScrollyData() {
   let scrollyData = await fetchDataFromServerExcelFile(excelFilePath);
@@ -119,8 +78,24 @@ async function fetchDataFromServerExcelFile(excelFilePath) {
   }
 }
 
+/*-------------  Google Sheets Functions --------------*/
+function createGoogleSheetsAPIEndpoint() {
+  const spreadsheetId = extractIDFromGoogleSheetURL();
+  var rangesParameter = ""; // each range in a google sheet is a sheet (tab) name
+  sheetNames.map((sheetName, i) => {
+    rangesParameter += `ranges=${sheetName}`;
+    if (i < sheetNames.length - 1) {
+      rangesParameter += "&";
+    }
+  });
+
+  return `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values:batchGet?${rangesParameter}&key=${googleApiKey}`;
+}
+
 async function fetchDataFromGoogleSheet() {
   try {
+    const apiEndpoint = createGoogleSheetsAPIEndpoint();
+
     const response = await fetch(apiEndpoint);
     const responseJson = await response.json();
 

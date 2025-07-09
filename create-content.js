@@ -3,7 +3,7 @@
   imported from elsewhere, like a google sheet.
   See index.html for the expected structure of the HTML 
 */
-import { fetchScrollyData } from "./google-sheet.js";
+import { fetchScrollyData } from "./fetch-story-data.js";
 import { validateStepDataArray } from "./common.js";
 import { displayThenThrowError } from "./common.js";
 
