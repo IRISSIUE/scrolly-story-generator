@@ -8,16 +8,18 @@ import { ScrollyData, StoryData, StepData, ScrollyError } from "./common.js";
 // The Google Sheet below is a template. You can copy it to your Google Drive and use it to create your own scroll story.
 // Use the URL from the browser address bar replacing the one below.
 // Note that you must publish this sheet to the web for it to be accessible by the Google Sheets API.
+// so it can be read by this app.
 // Google Sheet File menu -> Share-> Publish to Web -> Publish Entire Document as Web Page
-//     (NOTE: This the Google Sheet File Menu, not the browser File menu, you may have to expand the
+//     (NOTE: This is the Google Sheet File Menu, not the browser File menu, you may have to expand the
 //     Menu bar at the top right up arrow to see the Sheets menus)
 // Also, you must Share the sheet so that anyone with a link can access it
 //     Share button at top right of sheet -> General Access -> Anyone with the link -> Viewer
 const googleSheetURL =
   "https://docs.google.com/spreadsheets/d/17sHlHcOilG9UmRju8YDGx4bRMIDpQ5Bpfzc0QI-Np6c";
 
-// An API Key is required to read a google sheet from an application. It is generated at https://console.developers.google.com
-// and if you plan to publish this scrolly story on your own standalone site, you will need to generate your own key.
+// An API Key is required to read a google sheet from an application. The one below is for this version
+// of the application, you will need to generate your own key if you plan to publish this scrolly story on
+// your own standalone site.
 // To generate your own key:
 // 1. Go to https://console.developers.google.com
 // 2. Create a new project with unique name (don't need a Parent Organization)
@@ -55,8 +57,66 @@ function createGoogleSheetsAPIEndpoint() {
   return `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values:batchGet?${rangesParameter}&key=${googleApiKey}`;
 }
 
+const excelFilePath = "data/StoryData.xlsx";
+
 export async function fetchScrollyData() {
-  return await fetchDataFromGoogleSheet();
+  let scrollyData = await fetchDataFromServerExcelFile(excelFilePath);
+
+  if (!scrollyData) {
+    scrollyData = await fetchDataFromGoogleSheet();
+    console.log("Fetched data from Google Sheet");
+  } else {
+    console.log("Fetched data from Excel file on server");
+  }
+
+  return scrollyData;
+}
+
+// Look for an excel file on the server from which to read story data
+async function fetchDataFromServerExcelFile(excelFilePath) {
+  try {
+    const response = await fetch(excelFilePath);
+
+    // if File doesn't exist, return null and we'll look for the Google Sheet instead
+    if (!response.ok && response.status === 404) {
+      return null;
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+    const storySheet = workbook.Sheets["Story"];
+    const stepsSheet = workbook.Sheets["Steps"];
+    if (!storySheet || !stepsSheet) {
+      throw new ScrollyError(
+        "Processing Excel file",
+        "Excel file must contain both 'Story' and 'Steps' sheets"
+      );
+    }
+
+    const storyData = XLSX.utils.sheet_to_json(storySheet, {
+      header: 1,
+      defval: "",
+      blankrows: false,
+    });
+    const stepsData = XLSX.utils.sheet_to_json(stepsSheet, {
+      header: 1,
+      defval: "",
+      blankrows: false,
+    });
+
+    // Create structure similar to Google Sheets API response
+    const sheetsArray = {
+      valueRanges: [{ values: storyData }, { values: stepsData }],
+    };
+
+    return convertGoogleSheetDataToScrollyData(sheetsArray);
+  } catch (error) {
+    console.error("Error loading Excel file:", error);
+    throw new ScrollyError(
+      "Loading Excel file from server",
+      `Error: ${error.message}`
+    );
+  }
 }
 
 async function fetchDataFromGoogleSheet() {
@@ -64,7 +124,7 @@ async function fetchDataFromGoogleSheet() {
     const response = await fetch(apiEndpoint);
     const responseJson = await response.json();
 
-    throwGoogleSheetErrorIfExists(!response.ok, responseJson);
+    throwErrorIfGoogleSheetError(!response.ok, responseJson);
     return convertGoogleSheetDataToScrollyData(responseJson);
   } catch (error) {
     // Convert error to ScrollyError if it is not already
@@ -78,7 +138,7 @@ async function fetchDataFromGoogleSheet() {
   }
 }
 
-export function throwGoogleSheetErrorIfExists(hasError, responseJson) {
+export function throwErrorIfGoogleSheetError(hasError, responseJson) {
   const error = responseJson.error;
 
   // Check missing sheet name first so a message specific to that can be
