@@ -21,67 +21,80 @@ const stepsIndex = 1;
 export async function fetchScrollyData() {
   let scrollyData = await fetchDataFromServerExcelFile(excelFilePath);
 
-  if (!scrollyData) {
+  if (scrollyData) {
+    console.log("Fetched data from Excel file on server");
+  } else {
     scrollyData = await fetchDataFromGoogleSheet();
     console.log("Fetched data from Google Sheet");
-  } else {
-    console.log("Fetched data from Excel file on server");
   }
 
   return scrollyData;
 }
 
-// Look for an excel file on the server from which to read story data
+// Fetch data from an an excel file on the server
+// Return null if the fetch fails (e.g., file not found)
+// But throw error if the fetch succeeds and the file is invalid
 async function fetchDataFromServerExcelFile(excelFilePath) {
   try {
     const response = await fetch(excelFilePath);
-
-    // if File doesn't exist, return null and we'll look for the Google Sheet instead
-    if (!response.ok && response.status === 404) {
+    if (!response.ok) {
       return null;
     }
+
     const arrayBuffer = await response.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    throwErrorIfExcelSheetIsMissingSheetNames(workbook, sheetNames);
 
-    const storySheet = workbook.Sheets["Story"];
-    const stepsSheet = workbook.Sheets["Steps"];
-    if (!storySheet || !stepsSheet) {
-      throw new ScrollyError(
-        "Processing Excel file",
-        "Excel file must contain both 'Story' and 'Steps' sheets"
-      );
-    }
-
-    const storyData = XLSX.utils.sheet_to_json(storySheet, {
-      header: 1,
-      defval: "",
-      blankrows: false,
-    });
-    const stepsData = XLSX.utils.sheet_to_json(stepsSheet, {
-      header: 1,
-      defval: "",
-      blankrows: false,
-    });
-
-    // Create structure similar to Google Sheets API response
-    const sheetsArray = {
-      valueRanges: [{ values: storyData }, { values: stepsData }],
-    };
-
-    return convertGoogleSheetDataToScrollyData(sheetsArray);
+    return convertExcelDataToScrollyData(workbook, sheetNames);
   } catch (error) {
-    console.error("Error loading Excel file:", error);
     throw new ScrollyError(
-      "Loading Excel file from server",
+      `Loading "${excelFilePath}" file from server`,
       `Error: ${error.message}`
     );
   }
 }
 
+export function convertExcelDataToScrollyData(workbook, sheetsArray) {
+  const storySheet = workbook.Sheets[sheetsArray[storyIndex]];
+  const stepsSheet = workbook.Sheets[sheetsArray[stepsIndex]];
+
+  const excelStoryData = XLSX.utils.sheet_to_json(storySheet, {
+    header: 1,
+    defval: "",
+    blankrows: false,
+  });
+  const excelStepsData = XLSX.utils.sheet_to_json(stepsSheet, {
+    header: 1,
+    defval: "",
+    blankrows: false,
+  });
+
+  const story = convertSheetDataToStoryData(excelStoryData);
+  const steps = convertSheetDataToStepDataArray(excelStepsData);
+  return new ScrollyData(story, steps);
+}
+
+export function throwErrorIfExcelSheetIsMissingSheetNames(
+  workbook,
+  expectedSheetNames
+) {
+  expectedSheetNames.forEach((sheetName) => {
+    if (workbook.SheetNames.indexOf(sheetName) === -1) {
+      throw new ScrollyError(
+        "Processing Excel file " + excelFilePath,
+        `Spreadsheet must contain a "${sheetName}" sheet.`
+      );
+    }
+  });
+}
+
 /*-------------  Google Sheets Functions --------------*/
+
 function createGoogleSheetsAPIEndpoint() {
   const spreadsheetId = extractIDFromGoogleSheetURL();
-  var rangesParameter = ""; // each range in a google sheet is a sheet (tab) name
+
+  // Ranges parameter is used to specify which sheets (tabs) to fetch data from
+  var rangesParameter = "";
   sheetNames.map((sheetName, i) => {
     rangesParameter += `ranges=${sheetName}`;
     if (i < sheetNames.length - 1) {
@@ -118,13 +131,16 @@ export function throwErrorIfGoogleSheetError(hasError, responseJson) {
 
   // Check missing sheet name first so a message specific to that can be
   // thrown before more generic error messages
-  throwErrorIfSpreadsheetIsMissingSheetNames(error, sheetNames);
+  throwErrorIfGoogleSheetIsMissingSheetNames(error, sheetNames);
 
   if (hasError) {
-    let errorMessage = error.message;
+    let errorMessage = "";
     if (error.code === 404) {
       errorMessage = "Could not find the data file";
+    } else {
+      errorMessage = error.message;
     }
+
     throw new ScrollyError(
       "Fetching data from Google Sheet " + googleSheetURL,
       errorMessage
@@ -132,7 +148,7 @@ export function throwErrorIfGoogleSheetError(hasError, responseJson) {
   }
 }
 
-function throwErrorIfSpreadsheetIsMissingSheetNames(responseError, sheetNames) {
+function throwErrorIfGoogleSheetIsMissingSheetNames(responseError, sheetNames) {
   if (responseError) {
     sheetNames.forEach((sheetName) => {
       if (
@@ -149,21 +165,23 @@ function throwErrorIfSpreadsheetIsMissingSheetNames(responseError, sheetNames) {
 }
 
 function convertGoogleSheetDataToScrollyData(sheetsArray) {
-  const storyData = convertGoogleSheetDataToStoryData(
+  const storyData = convertSheetDataToStoryData(
     sheetsArray.valueRanges[storyIndex].values
   );
   //console.log(JSON.stringify(storyData));
 
-  const stepDataArray = convertGoogleSheetDataToStepDataArray(
+  const stepDataArray = convertSheetDataToStepDataArray(
     sheetsArray.valueRanges[stepsIndex].values
   );
   return new ScrollyData(storyData, stepDataArray);
 }
 
-function convertGoogleSheetDataToStoryData(values) {
+/*------------ Common Data Conversion Functions --------------*/
+
+function convertSheetDataToStoryData(rows) {
   // There's only one (valid) row of data in the Story sheet, on the 2nd row (first row is header)
-  const headers = values[0];
-  const data = values[1];
+  const headers = rows[0];
+  const data = rows[1];
 
   // Create a mapping from header name to column index
   const colIndex = {};
@@ -186,14 +204,14 @@ function convertGoogleSheetDataToStoryData(values) {
   );
 }
 
-function convertGoogleSheetDataToStepDataArray(values) {
-  const headers = values.shift();
+function convertSheetDataToStepDataArray(rows) {
+  const headers = rows.shift();
   const colIndex = {};
   headers.forEach((header, i) => {
     colIndex[header.trim().toLowerCase()] = i;
   });
 
-  const stepDataArray = values.map((row) => {
+  const stepDataArray = rows.map((row) => {
     return new StepData(
       row[colIndex["contenttype"]],
       row[colIndex["filepath"]],
