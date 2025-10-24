@@ -112,7 +112,7 @@ Text can be formatted using HTML. The simplest way is to use this [HTML editor](
 Sometimes things get a little messy in the spreadsheet, and that generates errors with the tool. Most of the time, the tool will tell you what the problem is. Here are a couple common messages you might see and how to address them.
 
 - AltText: AltText is a required field, because it helps make your stories more accessible. Your story won't load if you don't have alt text for each media item.
-- Invalid contentType: Make sure your content type is one of the three drop-down options: map, image, or video.
+- Invalid contentType: Make sure your content type is one of the four drop-down options: map, image, text, or video.
 
 Occasionally, the story might load, but a specific piece of media might not. Here are a couple ways to troubleshoot media errors:
 
