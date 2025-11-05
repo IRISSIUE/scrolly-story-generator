@@ -4,6 +4,7 @@
 - [What you need to get started](#what-you-need-to-get-started)
 - [Step by step set-up guide](#step-by-step-set-up-guide)
 - [Editing guide](#editing-guide)
+- [Story](#story)
 - [Classroom considerations](#classroom-considerations)
 - [Credits](#credits)
 
