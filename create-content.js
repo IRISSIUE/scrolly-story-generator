@@ -15,7 +15,7 @@ export async function createAllStoryScrollyContentInHTML() {
     );
     validateStepDataArray(
       allScrollyData.stepData,
-      "Reading Step data from file (2nd sheet)"
+      "Reading Step data from file (in the 'Steps' Tab/Sheet)"
     );
     createStoryContentInHtml(allScrollyData.storyData);
     createStepsContentInHtml(allScrollyData.stepData);

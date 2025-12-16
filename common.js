@@ -132,12 +132,14 @@ export class StepData {
     if (!validContentTypes.includes(this.contentType)) {
       let invalidContentTypeString = `Invalid contentType: "${this.contentType}"`;
       if (this.contentType === "") {
-        invalidContentTypeString = "No contentType specified";
+        invalidContentTypeString = "No Content Type specified";
       }
       throw new ScrollyError(
         actionTextIfError,
         invalidContentTypeString,
-        `Valid contentType values are: ${validContentTypes.join(", ")}`
+        `You must enter a valid value in the Content Type field, one of: ${validContentTypes.join(
+          ", "
+        )}`
       );
     }
   }

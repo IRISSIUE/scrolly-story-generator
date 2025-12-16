@@ -93,6 +93,7 @@ a {
   margin: 10px 0;
   border-radius: 10px;
   text-align: left;
+  font-size: 1.25rem;
 }
 
 #error-header {
@@ -104,15 +105,15 @@ a {
 #error-message {
   font-weight: bold;
   margin-bottom: 2rem;
+  font-size: 2rem;
+  text-align: center;
 }
 
 #error-action-container {
   text-align: left;
-  font-size: smaller;
   margin-bottom: 0.5rem;
 }
 
 #error-hint {
-  font-size: smaller;
   display: none; /* only display if it exists */
 }
