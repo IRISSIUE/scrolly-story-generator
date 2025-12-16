@@ -133,6 +133,7 @@ map {
 .text-content {
   width: 75%;
   margin: 5rem auto 5rem auto;
+  font-size: 1.25rem;
 }
 
 .text-content * {
