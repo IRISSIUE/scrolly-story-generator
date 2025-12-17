@@ -6,6 +6,7 @@
 import { fetchScrollyData } from "./fetch-story-data.js";
 import { validateStepDataArray } from "./common.js";
 import { displayThenThrowError } from "./common.js";
+import { stripHtml } from "./common.js";
 
 export async function createAllStoryScrollyContentInHTML() {
   try {
@@ -69,7 +70,7 @@ export function createStoryContentInHtml(storyData) {
   storyTitle.innerHTML = storyData.title;
 
   const browserTitle = document.getElementById("browser-title");
-  browserTitle.innerHTML = storyData.title;
+  browserTitle.innerHTML = stripHtml(storyData.title);
 
   const subtitle = document.getElementById("subtitle");
   subtitle.innerHTML = storyData.subtitle;

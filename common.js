@@ -211,6 +211,15 @@ export function validateStepDataArray(stepDataArray, actionTextIfError) {
   });
 }
 
+export function stripHtml(html) {
+  // create a temporary DOM element and add our
+  // html to it, then get the text content, which
+  // is the html stripped out
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+  return tempDiv.textContent || tempDiv.innerText || "";
+}
+
 export class ScrollyError extends Error {
   constructor(Action, Message, Hint) {
     super(Message);
