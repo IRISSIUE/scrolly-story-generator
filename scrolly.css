@@ -110,6 +110,7 @@ map {
   padding: 1rem;
   filter: drop-shadow(lightgray 0.5rem 0.5rem 10px);
   font-size: 1.25rem;
+  font-size: clamp(10px, 3.5vw, 24px);
 }
 
 .step:first-child {
@@ -124,16 +125,11 @@ map {
   transition: opacity 1s linear;
 }
 
-.step p {
-  text-align: center;
-  padding: 1rem;
-  font-size: clamp(10px, 3.5vw, 24px);
-}
-
 .text-content {
   width: 75%;
   margin: 5rem auto 5rem auto;
   font-size: 1.25rem;
+  font-size: clamp(10px, 3.5vw, 24px);
 }
 
 .text-content * {
