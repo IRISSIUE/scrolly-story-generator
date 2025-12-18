@@ -104,6 +104,7 @@ map {
   align-items: center;
   justify-content: center;
   opacity: 0%;
+  transform: translateZ(0); /* fixes apple/Safari bug where transitions don't work properly */
 }
 
 .step-content {
