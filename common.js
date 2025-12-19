@@ -112,7 +112,6 @@ export class StepData {
   validate(actionTextIfError) {
     this.validateContentType(actionTextIfError);
 
-    this.validateText(actionTextIfError);
     this.validateAltText(actionTextIfError);
 
     this.validateLatitude(actionTextIfError);

@@ -187,7 +187,11 @@ function createStepElement(stepData, stepNumber) {
   if (stepData.imageOrientation) {
     stepElement.dataset.imageOrientation = stepData.imageOrientation;
   }
-  stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
+  if (stepData.text && stepData.text !== "") {
+    stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
+  } else {
+        stepElement.innerHTML = `<div class="step-content-empty">${stepData.text}</div>`;
+  }
 
   return stepElement;
 }

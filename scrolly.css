@@ -114,6 +114,10 @@ map {
   font-size: clamp(10px, 3.5vw, 24px);
 }
 
+.step-content-empty {
+  display: none;
+}
+
 .step:first-child {
   margin-top: 5rem;
 }
