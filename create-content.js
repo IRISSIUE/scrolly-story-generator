@@ -18,6 +18,7 @@ export async function createAllStoryScrollyContentInHTML() {
       allScrollyData.stepData,
       "Reading Step data from file (in the 'Steps' Tab/Sheet)"
     );
+    console.log("Creating story content in HTML", allScrollyData);
     createStoryContentInHtml(allScrollyData.storyData);
     createStepsContentInHtml(allScrollyData.stepData);
 
@@ -190,7 +191,7 @@ function createStepElement(stepData, stepNumber) {
   if (stepData.text && stepData.text !== "") {
     stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
   } else {
-        stepElement.innerHTML = `<div class="step-content-empty">${stepData.text}</div>`;
+    stepElement.innerHTML = `<div class="step-content-empty">${stepData.text}</div>`;
   }
 
   return stepElement;

@@ -220,6 +220,7 @@ function convertSheetDataToStepDataArray(rows) {
       row[colIndex["longitude"]],
       row[colIndex["zoomlevel"]],
       row[colIndex["imageorientation"]],
+      row[colIndex["texthorizontalpercentage"]],
       row[colIndex["text"]]
     );
   });
