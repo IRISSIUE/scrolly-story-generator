@@ -43,7 +43,6 @@
   /* Center everything inside */
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   display: none; /* hide by default, let meta data decide when to display */
   height: 100%; /* fill space provided by sticky-container parent */
   width: 100%; /* fill space provided by sticky-container parent */
@@ -93,8 +92,8 @@ map {
 
 .steps-container {
   position: relative;
-  width: 33%;
   padding: 0 0rem;
+  transition: width 1s ease-in-out;
 }
 
 .step {

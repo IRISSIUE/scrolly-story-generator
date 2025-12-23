@@ -11,6 +11,8 @@ let _stickyImageContainer = null;
 let _stickyMapContainer = null;
 let _stickyVideoContainer = null;
 let _prevStepData = null;
+let _currentStep = -1;
+let _isTransitioning = false;
 
 const transitionInMilliseconds = 500;
 
@@ -26,7 +28,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 // scrollama event handlers
 function handleStepEnter(response) {
+  if (_isTransitioning) {
+    console.log("Currently transitioning, ignoring step enter");
+    return; // ignore if currently transitioning
+  }
+  _isTransitioning = true;
   var stepElement = response.element;
+
+  if (stepElement.dataset.step == _currentStep) {
+    //console.log("Already at this step, doing nothing");
+    //return; // already at this step, do nothing
+  }
+  _currentStep = stepElement.dataset.step;
 
   // Set active step state to is-active and all othe steps not active
   const steps = document.querySelectorAll(".step");
@@ -34,7 +47,29 @@ function handleStepEnter(response) {
   stepElement.classList.add("is-active");
   console.log("Step " + stepElement.dataset.step + " entered");
 
+  setStepHorizontalWidths(stepElement);
   replaceStepStickyContent(stepElement);
+
+  _isTransitioning = false;
+}
+
+function setStepHorizontalWidths(stepElement) {
+  // Find the nearest parent .steps-container and set widths there
+  const stepsContainer = stepElement.closest(".steps-container");
+  if (stepsContainer) {
+    const stickyContainer =
+      stepsContainer.parentElement.querySelector(".sticky-container");
+    stepsContainer.style.width = `${stepElement.dataset.textHorizontalPercentage}%`;
+    stickyContainer.style.width = `${
+      100 - stepElement.dataset.textHorizontalPercentage
+    }%`;
+    console.log(
+      "Set step horizontal widths: text ",
+      stepsContainer.style.width,
+      ", sticky ",
+      stickyContainer.style.width
+    );
+  }
 }
 
 /* As we enter a step in the story, replace or modify the sticky content

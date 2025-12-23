@@ -29,13 +29,12 @@ export class StoryData {
     this.title = DOMPurify.sanitize(title);
     this.subtitle = DOMPurify.sanitize(subtitle);
     this.endText = DOMPurify.sanitize(endText);
-    this.textHorizontalPercentage = DOMPurify.sanitize(
+    this.authors = DOMPurify.sanitize(authors);
+    // don't sanitize numeric values as that will make "0" become ""
+    this.textHorizontalPercentage = stripPercentageCharIfExists(
       textHorizontalPercentage
     );
-    this.authors = DOMPurify.sanitize(authors);
-    this.textHorizontalPercentage = stripPercentageCharIfExists(
-      DOMPurify.sanitize(this.textHorizontalPercentage)
-    );
+    console.log("input text horizontal percentage:", textHorizontalPercentage);
     this.backgroundColor = DOMPurify.sanitize(backgroundColor);
     this.scrollBoxBackgroundColor = DOMPurify.sanitize(
       scrollBoxBackgroundColor
@@ -99,6 +98,7 @@ export class StepData {
     this.longitude = DOMPurify.sanitize(longitude);
     this.zoomLevel = DOMPurify.sanitize(zoomLevel);
     this.imageOrientation = DOMPurify.sanitize(imageOrientation);
+    // don't sanitize numeric values as that will make "0" become ""
     this.textHorizontalPercentage = stripPercentageCharIfExists(
       textHorizontalPercentage
     );
