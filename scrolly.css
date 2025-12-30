@@ -46,6 +46,7 @@
   display: none; /* hide by default, let meta data decide when to display */
   height: 100%; /* fill space provided by sticky-container parent */
   width: 100%; /* fill space provided by sticky-container parent */
+  overflow: hidden;
 }
 
 .sticky-image-container img {
