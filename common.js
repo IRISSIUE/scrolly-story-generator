@@ -34,7 +34,6 @@ export class StoryData {
     this.textHorizontalPercentage = stripPercentageCharIfExists(
       textHorizontalPercentage
     );
-    console.log("input text horizontal percentage:", textHorizontalPercentage);
     this.backgroundColor = DOMPurify.sanitize(backgroundColor);
     this.scrollBoxBackgroundColor = DOMPurify.sanitize(
       scrollBoxBackgroundColor
