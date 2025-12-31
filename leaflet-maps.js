@@ -63,10 +63,10 @@ function createStickyMap(id, lat, long, zoom) {
 
   leafletMap.scrollWheelZoom.disable();
 
-  handleResizeEvents();
+  handleLeafletResizeEvents();
 }
 
-function handleResizeEvents() {
+function handleLeafletResizeEvents() {
   // Add event listener to handle display changes
   const mapContainer = document.getElementById(leafletMapId);
   const observer = new MutationObserver((mutations) => {
@@ -84,4 +84,10 @@ function handleResizeEvents() {
     attributes: true,
     attributeFilter: ["style"],
   });
+}
+
+function invalidateLeafletMapSize() {
+  if (leafletMap) {
+    leafletMap.invalidateSize();
+  }
 }

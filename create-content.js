@@ -205,10 +205,6 @@ function createStepElement(stepData, stepNumber) {
   stepElement.dataset.textHorizontalPercentage = getValidHorizontalPercentage(
     stepData.textHorizontalPercentage
   );
-  if (stepData.textHorizontalPercentage === 0) {
-    console.log("Step ", stepNumber, " has 0% text, hiding text box");
-    stepElement.style.visibility = "hidden";
-  }
 
   if (stepData.text && stepData.text !== "") {
     stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;

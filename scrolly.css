@@ -115,7 +115,8 @@ map {
 }
 
 .step-content-empty {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .step:first-child {

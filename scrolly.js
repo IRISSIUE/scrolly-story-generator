@@ -47,29 +47,49 @@ function handleStepEnter(response) {
   stepElement.classList.add("is-active");
   console.log("Step " + stepElement.dataset.step + " entered");
 
-  setStepHorizontalWidths(stepElement);
   replaceStepStickyContent(stepElement);
+  setStepHorizontalWidths(stepElement);
 
   _isTransitioning = false;
 }
 
 function setStepHorizontalWidths(stepElement) {
-  // Find the nearest parent .steps-container and set widths there
-  const stepsContainer = stepElement.closest(".steps-container");
-  if (stepsContainer) {
-    const stickyContainer =
-      stepsContainer.parentElement.querySelector(".sticky-container");
-    stepsContainer.style.width = `${stepElement.dataset.textHorizontalPercentage}%`;
-    stickyContainer.style.width = `${
-      100 - stepElement.dataset.textHorizontalPercentage
-    }%`;
-    console.log(
-      "Set step horizontal widths: text ",
-      stepsContainer.style.width,
-      ", sticky ",
-      stickyContainer.style.width
-    );
+  const scrollyContainer = stepElement.closest(".scrolly-container");
+  if (!scrollyContainer) return;
+
+  const stepsContainer = scrollyContainer.querySelector(".steps-container");
+  const stickyContainer = scrollyContainer.querySelector(".sticky-container");
+  const horizontalPercentage = parseFloat(
+    stepElement.dataset.textHorizontalPercentage
+  );
+
+  // When the text horizontal percentage is very small or 0, the trigger for
+  // which step we are one gets confused. The user scrolls to a new step,
+  // the layout changes so there is no hoirizonatl space for the text, and then
+  // the step reverts back to the previous step because the text area is no longer
+  // visible. To avoid this, we set a minimum of 5% horizontal space for the text,
+  // but then hide the text box entirely so it appears as if there is 0% text.
+  // Note that the sticky container is set to 90% width in this mode to ensure
+  // there is enough right margin for the sticky content to display properly.
+  // This is a bit of a hack, but it works around the limitations of scrollama.
+  // Also note that we don't need to do this when the text percentage is 100%,
+  // because the sticky container is fully hidden in that case and the sticky
+  // content location doesn't affect which step is active.
+
+  if (horizontalPercentage <= 5) {
+    // Activate full-sticky mode
+    scrollyContainer.classList.add("step-content-hidden");
+    stepsContainer.style.width = `5%`;
+    stickyContainer.style.width = `90%`;
+  } else {
+    // Revert to normal side-by-side mode
+    scrollyContainer.classList.remove("step-content-hidden");
+
+    // Set the widths for the normal layout
+    stepsContainer.style.width = `${horizontalPercentage}%`;
+    stickyContainer.style.width = `${100 - horizontalPercentage}%`;
   }
+  invalidateLeafletMapSize();
 }
 
 /* As we enter a step in the story, replace or modify the sticky content
