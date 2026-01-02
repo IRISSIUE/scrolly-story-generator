@@ -36,8 +36,9 @@ function handleStepEnter(response) {
   var stepElement = response.element;
 
   if (stepElement.dataset.step == _currentStep) {
-    //console.log("Already at this step, doing nothing");
-    //return; // already at this step, do nothing
+    console.log("Already at this step, doing nothing");
+    _isTransitioning = false;
+    return;
   }
   _currentStep = stepElement.dataset.step;
 
@@ -77,19 +78,25 @@ function setStepHorizontalWidths(stepElement) {
   // content location doesn't affect which step is active.
 
   if (horizontalPercentage <= 5) {
-    // Activate full-sticky mode
-    scrollyContainer.classList.add("step-content-hidden");
+    stepsContainer.classList.add("step-content-hidden");
+    stickyContainer.classList.add("no-left-margin");
+
     stepsContainer.style.width = `5%`;
     stickyContainer.style.width = `90%`;
   } else {
     // Revert to normal side-by-side mode
-    scrollyContainer.classList.remove("step-content-hidden");
+    stepsContainer.classList.remove("step-content-hidden");
+    stickyContainer.classList.remove("no-left-margin");
 
     // Set the widths for the normal layout
     stepsContainer.style.width = `${horizontalPercentage}%`;
     stickyContainer.style.width = `${100 - horizontalPercentage}%`;
   }
-  invalidateLeafletMapSize();
+  // Leaflet maps were sometimes not displaying the whole map after a
+  // horizontal width change, so we invalidated the map size to force a redraw.
+  // However, this seems to have messed up back scrolling somehow. Needs more
+  // investigation.
+  //invalidateLeafletMapSize();
 }
 
 /* As we enter a step in the story, replace or modify the sticky content

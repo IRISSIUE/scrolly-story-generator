@@ -107,6 +107,10 @@ map {
   transform: translateZ(0); /* fixes apple/Safari bug where transitions don't work properly */
 }
 
+.no-left-margin {
+  margin-left: 0;
+}
+
 .step-content {
   padding: 1rem;
   filter: drop-shadow(lightgray 0.5rem 0.5rem 10px);
@@ -114,7 +118,8 @@ map {
   font-size: clamp(10px, 3.5vw, 24px);
 }
 
-.step-content-empty {
+.step-content-hidden {
+  margin-left: 0;
   visibility: hidden;
   opacity: 0;
 }
