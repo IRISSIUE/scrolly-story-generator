@@ -31,7 +31,7 @@
   z-index: 0;
   top: 12.5vh;
   height: 75vh;
-  width: 75%;
+  width: 67%;
   /* The opacity transition will fade the content in/out when it gets replaced, 
   so set the opacity to 1 when fading in and 0 when fading out */
   transition: opacity 0.5s linear;
@@ -94,6 +94,7 @@ map {
 .steps-container {
   position: relative;
   padding: 0 0rem;
+  width:33%;
   transition: width 1s ease-in-out;
 }
 

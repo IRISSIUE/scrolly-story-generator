@@ -82,6 +82,12 @@ export function createStoryContentInHtml(storyData) {
 
   const endText = document.getElementById("end-text");
   endText.innerHTML = storyData.endText;
+
+  // The horizontal width may be overridden at the step level, but set
+  // here first as the default
+  setStoryHorizontalWidthOfTextAndStickyContent(
+    storyData.textHorizontalPercentage
+  );
 }
 
 function setStoryHorizontalWidthOfTextAndStickyContent(horizontalPercentage) {
@@ -101,6 +107,11 @@ function setStoryHorizontalWidthOfTextAndStickyContent(horizontalPercentage) {
   stickyContainers.forEach((stickyContentDiv) => {
     stickyContentDiv.style.width = `${100 - horizontalPercentageNumToUse}%`;
   });
+  console.log(
+    "Set all steps containers to ",
+    horizontalPercentageNumToUse,
+    "%"
+  );
 }
 
 function getValidHorizontalPercentage(inputPercentage) {
