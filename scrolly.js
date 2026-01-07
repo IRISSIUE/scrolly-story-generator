@@ -271,3 +271,11 @@ function initScrollama() {
   // setup resize event
   window.addEventListener("resize", scroller.resize);
 }
+
+// Fix 'class=" class-name" errors where there's a space before the class name
+// Needed to fix classes that are added dynamically by 3rd parties
+window.addEventListener("load", () => {
+  document.querySelectorAll('[class^=" "]').forEach((el) => {
+    el.className = el.className.trim();
+  });
+});
