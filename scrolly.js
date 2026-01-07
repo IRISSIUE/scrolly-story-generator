@@ -272,10 +272,30 @@ function initScrollama() {
   window.addEventListener("resize", scroller.resize);
 }
 
-// Fix 'class=" class-name" errors where there's a space before the class name
-// Needed to fix classes that are added dynamically by 3rd parties
-window.addEventListener("load", () => {
-  document.querySelectorAll('[class^=" "]').forEach((el) => {
-    el.className = el.className.trim();
-  });
+/**
+ * Watch for the Soundcite libraryadding its audio player div to the DOM.
+ * When it detects the div, it trims the leading space from the class name
+ * to prevent rendering issues in Safari.
+ */
+const observer = new MutationObserver((mutationsList) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      mutation.addedNodes.forEach((node) => {
+        // Check if the added node is an element and has the problematic class
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          node.classList.contains("soundcite-audio")
+        ) {
+          // Trim the className to remove leading/trailing spaces
+          node.className = node.className.trim();
+          console.log("Fixed Soundcite class:", node.className);
+          // We found and fixed the node, so we can stop observing
+          observer.disconnect();
+        }
+      });
+    }
+  }
 });
+
+// Start observing the body for added child elements
+observer.observe(document.body, { childList: true, subtree: true });
