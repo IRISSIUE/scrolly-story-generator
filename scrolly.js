@@ -122,13 +122,26 @@ function replaceStepStickyContent(stepElement) {
   } else if (stepData.contentType === "video") {
     displayStickyVideo(stepData);
   } else if (stepData.contentType === "map") {
-    displayStickyMap(
-      _stickyMapContainer.id,
-      stepData.latitude,
-      stepData.longitude,
-      stepData.zoomLevel
-    );
-
+    if (needsTransition) {
+      // for maps, need to wait until after the transition to display,
+      // otherwise the parent container may still be display:none
+      // and leaflet won't know its parent size to display properly
+      setTimeout(() => {
+        displayStickyMap(
+          _stickyMapContainer.id,
+          stepData.latitude,
+          stepData.longitude,
+          stepData.zoomLevel
+        );
+      }, transitionInMilliseconds + 100);
+    } else {
+      displayStickyMap(
+        _stickyMapContainer.id,
+        stepData.latitude,
+        stepData.longitude,
+        stepData.zoomLevel
+      );
+    }
     addAltTextToMap(_stickyMapContainer, stepData.altText);
   }
   _prevStepData = stepData;
