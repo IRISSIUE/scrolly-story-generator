@@ -6,6 +6,7 @@
 
 import { StepData } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
+import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
 
 let _stickyImageContainer = null;
 let _stickyMapContainer = null;
@@ -48,8 +49,8 @@ function handleStepEnter(response) {
   stepElement.classList.add("is-active");
   console.log("Step " + stepElement.dataset.step + " entered");
 
-  replaceStepStickyContent(stepElement);
   setStepHorizontalWidths(stepElement);
+  replaceStepStickyContent(stepElement);
 
   _isTransitioning = false;
 }
@@ -108,8 +109,10 @@ function replaceStepStickyContent(stepElement) {
   // ensure we have the sticky containers associated with the current step
   setCurrentStickyContainers(stepElement);
 
+  const needsTransition = doesRequireStickyTransition(stepData);
+
   // display different sticky container if needed
-  if (doesRequireStickyTransition(stepData)) {
+  if (needsTransition) {
     transitionToNewStickyContentContainer(stepData.contentType);
   }
 
@@ -125,6 +128,7 @@ function replaceStepStickyContent(stepElement) {
       stepData.longitude,
       stepData.zoomLevel
     );
+
     addAltTextToMap(_stickyMapContainer, stepData.altText);
   }
   _prevStepData = stepData;
@@ -190,7 +194,7 @@ function transitionToNewStickyContentContainer(activateContentType) {
         _stickyMapContainer.style.display = "none";
         break;
     }
-  }, transitionInMilliseconds);
+  }, transitionInMilliseconds + 100);
 }
 
 function displayStickyImage(stepData) {
@@ -269,7 +273,10 @@ function initScrollama() {
     .onStepEnter(handleStepEnter);
 
   // setup resize event
-  window.addEventListener("resize", scroller.resize);
+  window.addEventListener("resize", () => {
+    scroller.resize();
+    invalidateLeafletMapSize();
+  });
 }
 
 /**
@@ -288,7 +295,6 @@ const observer = new MutationObserver((mutationsList) => {
         ) {
           // Trim the className to remove leading/trailing spaces
           node.className = node.className.trim();
-          console.log("Fixed Soundcite class:", node.className);
           // We found and fixed the node, so we can stop observing
           observer.disconnect();
         }

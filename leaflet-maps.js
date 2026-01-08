@@ -1,20 +1,20 @@
 /*
   leaflet-maps.js handles displaying leaflet maps from within a sticky container
 */
+export { displayStickyMap, invalidateLeafletMapSize };
 
 let leafletMap = null;
 let leafletMapId = null;
 
 function displayStickyMap(id, lat, long, zoom) {
-  /* DEBUGGING
-  console.log("Displaying map:", { lat, long, zoom });
-  const container = document.getElementById("sticky-map-container");
+  console.log("Displaying map:", { leafletMapId, id, lat, long, zoom });
+  const container = document.getElementById(id);
   console.log("Container dimensions:", {
     width: container.clientWidth,
     height: container.clientHeight,
     display: window.getComputedStyle(container).display,
   });
-  */
+
   if (id != leafletMapId) {
     removeCurrentLeafletMap();
   }
@@ -51,6 +51,7 @@ function moveStickyMapLocation(lat, long, zoom) {
 }
 
 function createStickyMap(id, lat, long, zoom) {
+  console.log("Creating new leaflet map in container:", id);
   leafletMap = L.map(id, {
     center: [lat, long],
     zoom: zoom,
