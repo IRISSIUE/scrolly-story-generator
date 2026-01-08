@@ -6,11 +6,14 @@
 
 import { StepData } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
+import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
 
 let _stickyImageContainer = null;
 let _stickyMapContainer = null;
 let _stickyVideoContainer = null;
 let _prevStepData = null;
+let _currentStep = -1;
+let _isTransitioning = false;
 
 const transitionInMilliseconds = 500;
 
@@ -26,7 +29,19 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 // scrollama event handlers
 function handleStepEnter(response) {
+  if (_isTransitioning) {
+    console.log("Currently transitioning, ignoring step enter");
+    return; // ignore if currently transitioning
+  }
+  _isTransitioning = true;
   var stepElement = response.element;
+
+  if (stepElement.dataset.step == _currentStep) {
+    console.log("Already at this step, doing nothing");
+    _isTransitioning = false;
+    return;
+  }
+  _currentStep = stepElement.dataset.step;
 
   // Set active step state to is-active and all othe steps not active
   const steps = document.querySelectorAll(".step");
@@ -34,7 +49,55 @@ function handleStepEnter(response) {
   stepElement.classList.add("is-active");
   console.log("Step " + stepElement.dataset.step + " entered");
 
+  setStepHorizontalWidths(stepElement);
   replaceStepStickyContent(stepElement);
+
+  _isTransitioning = false;
+}
+
+function setStepHorizontalWidths(stepElement) {
+  const scrollyContainer = stepElement.closest(".scrolly-container");
+  if (!scrollyContainer) return;
+
+  const stepsContainer = scrollyContainer.querySelector(".steps-container");
+  const stickyContainer = scrollyContainer.querySelector(".sticky-container");
+  const horizontalPercentage = parseFloat(
+    stepElement.dataset.textHorizontalPercentage
+  );
+
+  // When the text horizontal percentage is very small or 0, the trigger for
+  // which step we are one gets confused. The user scrolls to a new step,
+  // the layout changes so there is no hoirizonatl space for the text, and then
+  // the step reverts back to the previous step because the text area is no longer
+  // visible. To avoid this, we set a minimum of 5% horizontal space for the text,
+  // but then hide the text box entirely so it appears as if there is 0% text.
+  // Note that the sticky container is set to 90% width in this mode to ensure
+  // there is enough right margin for the sticky content to display properly.
+  // This is a bit of a hack, but it works around the limitations of scrollama.
+  // Also note that we don't need to do this when the text percentage is 100%,
+  // because the sticky container is fully hidden in that case and the sticky
+  // content location doesn't affect which step is active.
+
+  if (horizontalPercentage <= 5) {
+    stepsContainer.classList.add("step-content-hidden");
+    stickyContainer.classList.add("no-left-margin");
+
+    stepsContainer.style.width = `5%`;
+    stickyContainer.style.width = `90%`;
+  } else {
+    // Revert to normal side-by-side mode
+    stepsContainer.classList.remove("step-content-hidden");
+    stickyContainer.classList.remove("no-left-margin");
+
+    // Set the widths for the normal layout
+    stepsContainer.style.width = `${horizontalPercentage}%`;
+    stickyContainer.style.width = `${100 - horizontalPercentage}%`;
+  }
+  // Leaflet maps were sometimes not displaying the whole map after a
+  // horizontal width change, so we invalidated the map size to force a redraw.
+  // However, this seems to have messed up back scrolling somehow. Needs more
+  // investigation.
+  //invalidateLeafletMapSize();
 }
 
 /* As we enter a step in the story, replace or modify the sticky content
@@ -46,8 +109,10 @@ function replaceStepStickyContent(stepElement) {
   // ensure we have the sticky containers associated with the current step
   setCurrentStickyContainers(stepElement);
 
+  const needsTransition = doesRequireStickyTransition(stepData);
+
   // display different sticky container if needed
-  if (doesRequireStickyTransition(stepData)) {
+  if (needsTransition) {
     transitionToNewStickyContentContainer(stepData.contentType);
   }
 
@@ -57,12 +122,26 @@ function replaceStepStickyContent(stepElement) {
   } else if (stepData.contentType === "video") {
     displayStickyVideo(stepData);
   } else if (stepData.contentType === "map") {
-    displayStickyMap(
-      _stickyMapContainer.id,
-      stepData.latitude,
-      stepData.longitude,
-      stepData.zoomLevel
-    );
+    if (needsTransition) {
+      // for maps, need to wait until after the transition to display,
+      // otherwise the parent container may still be display:none
+      // and leaflet won't know its parent size to display properly
+      setTimeout(() => {
+        displayStickyMap(
+          _stickyMapContainer.id,
+          stepData.latitude,
+          stepData.longitude,
+          stepData.zoomLevel
+        );
+      }, transitionInMilliseconds + 100);
+    } else {
+      displayStickyMap(
+        _stickyMapContainer.id,
+        stepData.latitude,
+        stepData.longitude,
+        stepData.zoomLevel
+      );
+    }
     addAltTextToMap(_stickyMapContainer, stepData.altText);
   }
   _prevStepData = stepData;
@@ -128,7 +207,7 @@ function transitionToNewStickyContentContainer(activateContentType) {
         _stickyMapContainer.style.display = "none";
         break;
     }
-  }, transitionInMilliseconds);
+  }, transitionInMilliseconds + 100);
 }
 
 function displayStickyImage(stepData) {
@@ -207,5 +286,35 @@ function initScrollama() {
     .onStepEnter(handleStepEnter);
 
   // setup resize event
-  window.addEventListener("resize", scroller.resize);
+  window.addEventListener("resize", () => {
+    scroller.resize();
+    invalidateLeafletMapSize();
+  });
 }
+
+/**
+ * Watch for the Soundcite libraryadding its audio player div to the DOM.
+ * When it detects the div, it trims the leading space from the class name
+ * to prevent rendering issues in Safari.
+ */
+const observer = new MutationObserver((mutationsList) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      mutation.addedNodes.forEach((node) => {
+        // Check if the added node is an element and has the problematic class
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          node.classList.contains("soundcite-audio")
+        ) {
+          // Trim the className to remove leading/trailing spaces
+          node.className = node.className.trim();
+          // We found and fixed the node, so we can stop observing
+          observer.disconnect();
+        }
+      });
+    }
+  }
+});
+
+// Start observing the body for added child elements
+observer.observe(document.body, { childList: true, subtree: true });

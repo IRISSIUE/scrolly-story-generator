@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title id="browser-title"> </title>
-    <meta name="description" content="Scrollama: Sticky Side Example" />
+    <meta name="description" content="Scrolly Story Generator" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link href='https://cdn.knightlab.com/libs/soundcite/latest/css/player.css' rel='stylesheet' type='text/css'>
@@ -36,12 +36,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
-    <script src="leaflet-maps.js"></script>
+    <script src="leaflet-maps.js" type="module"></script>
     <script src="fetch-story-data.js" type="module"></script>
     <script src="scrolly.js" type="module"></script>
 
     <!-- DOM Purify ensures user input can't be used for scripting tomfoolery -->
-    <script src=" https://cdn.jsdelivr.net/npm/dompurify@3.2.3/dist/purify.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.3/dist/purify.min.js"></script>
   </head>
 
   <body>
@@ -52,7 +52,7 @@
         <p id="byline">By <span id="authors"></span></p>
         <br>
         <div id="mobile-warning">
-          <p></p>This content is designed to be viewed in landscape. If you're on a phone or tablet, try rotating your screen for a better viewing experience.</p>
+          <p>This content is designed to be viewed in landscape. If you're on a phone or tablet, try rotating your screen for a better viewing experience.</p>
         </div>
       </section>
       
@@ -192,5 +192,6 @@
         <p id="end-text"></p>
       </section>
     </main>
+    <div class="soundcite-audio" aria-hidden="true"></div>
   </body>
 </html>

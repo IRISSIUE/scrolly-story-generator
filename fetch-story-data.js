@@ -22,7 +22,7 @@ export async function fetchScrollyData() {
   let scrollyData = await fetchDataFromServerExcelFile(excelFilePath);
 
   if (scrollyData) {
-    console.log("Fetched data from Excel file on server");
+    console.log("Fetched data from Excel file in project data folder");
   } else {
     scrollyData = await fetchDataFromGoogleSheet();
     console.log("Fetched data from Google Sheet");
@@ -220,6 +220,7 @@ function convertSheetDataToStepDataArray(rows) {
       row[colIndex["longitude"]],
       row[colIndex["zoomlevel"]],
       row[colIndex["imageorientation"]],
+      row[colIndex["texthorizontalpercentage"]],
       row[colIndex["text"]]
     );
   });

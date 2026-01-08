@@ -31,7 +31,7 @@
   z-index: 0;
   top: 12.5vh;
   height: 75vh;
-  width: 75%;
+  width: 67%;
   /* The opacity transition will fade the content in/out when it gets replaced, 
   so set the opacity to 1 when fading in and 0 when fading out */
   transition: opacity 0.5s linear;
@@ -43,10 +43,10 @@
   /* Center everything inside */
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   display: none; /* hide by default, let meta data decide when to display */
   height: 100%; /* fill space provided by sticky-container parent */
   width: 100%; /* fill space provided by sticky-container parent */
+  overflow: hidden;
 }
 
 .sticky-image-container img {
@@ -93,8 +93,9 @@ map {
 
 .steps-container {
   position: relative;
-  width: 33%;
   padding: 0 0rem;
+  width:33%;
+  transition: width 0.5s ease-in-out;
 }
 
 .step {
@@ -105,6 +106,17 @@ map {
   justify-content: center;
   opacity: 0%;
   transform: translateZ(0); /* fixes apple/Safari bug where transitions don't work properly */
+
+  /* Ensure an inactive step takes up at least 25% of the viewport width, otherwise
+  if an active step is at 0 width (full size for the sticky content), the previous
+  (now inactive) step's content is redrawn so that it has a lot of vertical space, which
+  pushes the previous step's text into the active step, and we get into an infinite
+  loop that keeps bouncing between two steps as active */
+  min-width: 40vw;
+}
+
+.no-left-margin {
+  margin-left: 0;
 }
 
 .step-content {
@@ -114,8 +126,10 @@ map {
   font-size: clamp(10px, 3.5vw, 24px);
 }
 
-.step-content-empty {
-  display: none;
+.step-content-hidden {
+  margin-left: 0;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .step:first-child {
@@ -128,6 +142,7 @@ map {
 .step.is-active {
   opacity: 100%;
   transition: opacity 1s linear;
+  min-width:0; /* reset active step to have no minimum width so it can shrink fully if specified to be 0 */
 }
 
 .text-content {

@@ -8,6 +8,8 @@ import { validateStepDataArray } from "./common.js";
 import { displayThenThrowError } from "./common.js";
 import { stripHtml } from "./common.js";
 
+let defaultTextHorizontalPercentage = "33.0";
+
 export async function createAllStoryScrollyContentInHTML() {
   try {
     const allScrollyData = await fetchScrollyData();
@@ -18,15 +20,15 @@ export async function createAllStoryScrollyContentInHTML() {
       allScrollyData.stepData,
       "Reading Step data from file (in the 'Steps' Tab/Sheet)"
     );
-    createStoryContentInHtml(allScrollyData.storyData);
-    createStepsContentInHtml(allScrollyData.stepData);
 
-    // horizontalPercentage has to be set after Steps are created
-    // because that's when the sticky containers (that get their
-    // width set) are created
-    setHorizontalWidthOfTextAndStickyContent(
+    // set default horizontal percentage from story data, before creating steps
+    // so steps can use it if they don't have their own value
+    defaultTextHorizontalPercentage = getValidHorizontalPercentage(
       allScrollyData.storyData.textHorizontalPercentage
     );
+
+    createStoryContentInHtml(allScrollyData.storyData);
+    createStepsContentInHtml(allScrollyData.stepData);
 
     applyGlobalStyles(allScrollyData.storyData);
   } catch (scrollyError) {
@@ -80,25 +82,49 @@ export function createStoryContentInHtml(storyData) {
 
   const endText = document.getElementById("end-text");
   endText.innerHTML = storyData.endText;
+
+  // The horizontal width may be overridden at the step level, but set
+  // here first as the default
+  setStoryHorizontalWidthOfTextAndStickyContent(
+    storyData.textHorizontalPercentage
+  );
 }
 
-function setHorizontalWidthOfTextAndStickyContent(horizontalPercentage) {
-  if (horizontalPercentage < 99 && horizontalPercentage > 1) {
-    // There can be multiple steps containers, so set width for each
+function setStoryHorizontalWidthOfTextAndStickyContent(horizontalPercentage) {
+  let horizontalPercentageNumToUse =
+    getValidHorizontalPercentage(horizontalPercentage);
 
-    // Width is specified as a percentage of the horizontal space for the text
-    const stepsContainers = document.querySelectorAll(".steps-container");
-    stepsContainers.forEach((stepsContentDiv) => {
-      stepsContentDiv.style.width = `${horizontalPercentage}%`;
-    });
+  // There can be multiple steps containers, so set width for each
 
-    // Sticky content is the remaining horizontal space, but we have to account
-    // for each kind of sticky content
-    const stickyContainers = document.querySelectorAll(".sticky-container");
-    stickyContainers.forEach((stickyContentDiv) => {
-      stickyContentDiv.style.width = `${100 - horizontalPercentage}%`;
-    });
+  // Width is specified as a percentage of the horizontal space for the text
+  const stepsContainers = document.querySelectorAll(".steps-container");
+  stepsContainers.forEach((stepsContentDiv) => {
+    stepsContentDiv.style.width = `${horizontalPercentageNumToUse}%`;
+  });
+
+  // Sticky content is the remaining horizontal space
+  const stickyContainers = document.querySelectorAll(".sticky-container");
+  stickyContainers.forEach((stickyContentDiv) => {
+    stickyContentDiv.style.width = `${100 - horizontalPercentageNumToUse}%`;
+  });
+  console.log(
+    "Set all steps containers to ",
+    horizontalPercentageNumToUse,
+    "%"
+  );
+}
+
+function getValidHorizontalPercentage(inputPercentage) {
+  let horizontalPercentageNum = parseFloat(inputPercentage);
+
+  if (
+    isNaN(horizontalPercentageNum) ||
+    horizontalPercentageNum > 100.0 ||
+    horizontalPercentageNum < 0.0
+  ) {
+    horizontalPercentageNum = defaultTextHorizontalPercentage;
   }
+  return horizontalPercentageNum.toString();
 }
 
 /* 
@@ -187,10 +213,14 @@ function createStepElement(stepData, stepNumber) {
   if (stepData.imageOrientation) {
     stepElement.dataset.imageOrientation = stepData.imageOrientation;
   }
+  stepElement.dataset.textHorizontalPercentage = getValidHorizontalPercentage(
+    stepData.textHorizontalPercentage
+  );
+
   if (stepData.text && stepData.text !== "") {
     stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
   } else {
-        stepElement.innerHTML = `<div class="step-content-empty">${stepData.text}</div>`;
+    stepElement.innerHTML = `<div class="step-content-empty">${stepData.text}</div>`;
   }
 
   return stepElement;
