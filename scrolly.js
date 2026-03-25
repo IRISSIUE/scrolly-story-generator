@@ -62,7 +62,7 @@ function setStepHorizontalWidths(stepElement) {
   const stepsContainer = scrollyContainer.querySelector(".steps-container");
   const stickyContainer = scrollyContainer.querySelector(".sticky-container");
   const horizontalPercentage = parseFloat(
-    stepElement.dataset.textHorizontalPercentage
+    stepElement.dataset.textHorizontalPercentage,
   );
 
   // When the text horizontal percentage is very small or 0, the trigger for
@@ -131,7 +131,7 @@ function replaceStepStickyContent(stepElement) {
           _stickyMapContainer.id,
           stepData.latitude,
           stepData.longitude,
-          stepData.zoomLevel
+          stepData.zoomLevel,
         );
       }, transitionInMilliseconds + 100);
     } else {
@@ -139,7 +139,7 @@ function replaceStepStickyContent(stepElement) {
         _stickyMapContainer.id,
         stepData.latitude,
         stepData.longitude,
-        stepData.zoomLevel
+        stepData.zoomLevel,
       );
     }
     addAltTextToMap(_stickyMapContainer, stepData.altText);
@@ -167,11 +167,11 @@ function setCurrentStickyContainers(stepElement) {
 
   // search for each of the corrsponding sticky containers within this scrolly container
   _stickyImageContainer = stickyContainer.querySelector(
-    ".sticky-image-container"
+    ".sticky-image-container",
   );
   _stickyMapContainer = stickyContainer.querySelector(".sticky-map-container");
   _stickyVideoContainer = stickyContainer.querySelector(
-    ".sticky-video-container"
+    ".sticky-video-container",
   );
 }
 

@@ -14,17 +14,17 @@ export async function createAllStoryScrollyContentInHTML() {
   try {
     const allScrollyData = await fetchScrollyData();
     allScrollyData.storyData.validate(
-      "Reading Story data from file (1st sheet)"
+      "Reading Story data from file (1st sheet)",
     );
     validateStepDataArray(
       allScrollyData.stepData,
-      "Reading Step data from file (in the 'Steps' Tab/Sheet)"
+      "Reading Step data from file (in the 'Steps' Tab/Sheet)",
     );
 
     // set default horizontal percentage from story data, before creating steps
     // so steps can use it if they don't have their own value
     defaultTextHorizontalPercentage = getValidHorizontalPercentage(
-      allScrollyData.storyData.textHorizontalPercentage
+      allScrollyData.storyData.textHorizontalPercentage,
     );
 
     createStoryContentInHtml(allScrollyData.storyData);
@@ -48,7 +48,7 @@ function applyGlobalStyles(storyData) {
 
   applyTextBoxStyles(
     storyData.scrollBoxBackgroundColor,
-    storyData.scrollBoxTextColor
+    storyData.scrollBoxTextColor,
   );
 }
 
@@ -86,7 +86,7 @@ export function createStoryContentInHtml(storyData) {
   // The horizontal width may be overridden at the step level, but set
   // here first as the default
   setStoryHorizontalWidthOfTextAndStickyContent(
-    storyData.textHorizontalPercentage
+    storyData.textHorizontalPercentage,
   );
 }
 
@@ -110,7 +110,7 @@ function setStoryHorizontalWidthOfTextAndStickyContent(horizontalPercentage) {
   console.log(
     "Set all steps containers to ",
     horizontalPercentageNumToUse,
-    "%"
+    "%",
   );
 }
 
@@ -147,7 +147,7 @@ function createStepsContentInHtml(stepDataArray) {
       // and start a new section
       if (isPrevStepScrolly) {
         contentSection.appendChild(
-          closeScrollyContainer(scrollyContainer, storySteps)
+          closeScrollyContainer(scrollyContainer, storySteps),
         );
       }
 
@@ -171,7 +171,7 @@ function createStepsContentInHtml(stepDataArray) {
 
   if (isPrevStepScrolly) {
     contentSection.appendChild(
-      closeScrollyContainer(scrollyContainer, storySteps)
+      closeScrollyContainer(scrollyContainer, storySteps),
     );
   }
 }
@@ -181,6 +181,7 @@ function createTextContainer(stepData, stepNum) {
   textContainer.classList.add("text-content");
   textContainer.dataset.step = stepNum;
   textContainer.innerHTML = stepData.text;
+  textContainer.tabIndex = stepNum;
   return textContainer;
 }
 
@@ -214,13 +215,13 @@ function createStepElement(stepData, stepNumber) {
     stepElement.dataset.imageOrientation = stepData.imageOrientation;
   }
   stepElement.dataset.textHorizontalPercentage = getValidHorizontalPercentage(
-    stepData.textHorizontalPercentage
+    stepData.textHorizontalPercentage,
   );
 
   if (stepData.text && stepData.text !== "") {
-    stepElement.innerHTML = `<div class="step-content">${stepData.text}</div>`;
+    stepElement.innerHTML = `<div class="step-content" tabIndex="${stepNumber}">${stepData.text}</div>`;
   } else {
-    stepElement.innerHTML = `<div class="step-content-empty">${stepData.text}</div>`;
+    stepElement.innerHTML = `<div class="step-content-empty" tabIndex="${stepNumber}">${stepData.text}</div>`;
   }
 
   return stepElement;
@@ -229,10 +230,11 @@ function createStepElement(stepData, stepNumber) {
 function createStickyContainers(uniqueId) {
   let stickyContainer = document.createElement("div");
   stickyContainer.classList.add("sticky-container");
+  stickyContainer.tabIndex = "-1";
 
   let imageContainer = document.createElement("div");
   imageContainer.classList.add("sticky-image-container");
-  imageContainer.innerHTML = `<img>`;
+  imageContainer.innerHTML = `<img alt="Empty initial image container">`;
 
   let mapContainer = document.createElement("div");
   mapContainer.classList.add("sticky-map-container");
