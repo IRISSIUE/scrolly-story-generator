@@ -7,6 +7,7 @@
 import { StepData } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
 import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
+import { initializePrintControlsAndView } from "./print-view.js";
 
 let _stickyImageContainer = null;
 let _stickyMapContainer = null;
@@ -22,6 +23,11 @@ let scroller = scrollama();
 
 document.addEventListener("DOMContentLoaded", async function () {
   await createAllStoryScrollyContentInHTML();
+
+  const isPrintView = initializePrintControlsAndView();
+  if (isPrintView) {
+    return;
+  }
 
   // initialize scrollama after the scrolly content has been created
   initScrollama();
@@ -248,15 +254,19 @@ function setImageOrientation(img, imageOrientation) {
 }
 
 function displayStickyVideo(stepData) {
-  _stickyVideoContainer.innerHTML = `<iframe 
-                id="the-iframe-video"
-                src="${stepData.filePath}"
-                frameborder="0"
-                referrerpolicy="strict-origin-when-cross-origin"
-                >
-            </iframe>`;
-  _stickyVideoContainer.ariaLabel = stepData.altText;
-  _stickyVideoContainer.role = "tooltip";
+  _stickyVideoContainer.innerHTML = "";
+
+  const iframe = document.createElement("iframe");
+  iframe.id = "the-iframe-video";
+  iframe.src = stepData.filePath;
+  iframe.setAttribute("frameborder", "0");
+  iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+  iframe.setAttribute("allowfullscreen", "");
+  iframe.title = stepData.altText || "Embedded video";
+
+  _stickyVideoContainer.appendChild(iframe);
+  _stickyVideoContainer.setAttribute("aria-label", stepData.altText || "Video");
+  _stickyVideoContainer.setAttribute("role", "region");
 
   _prevStepData = stepData.filePath;
 }

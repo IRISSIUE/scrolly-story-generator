@@ -181,7 +181,7 @@ function createTextContainer(stepData, stepNum) {
   textContainer.classList.add("text-content");
   textContainer.dataset.step = stepNum;
   textContainer.innerHTML = stepData.text;
-  textContainer.tabIndex = stepNum;
+  textContainer.tabIndex = 0;
   return textContainer;
 }
 
@@ -219,9 +219,9 @@ function createStepElement(stepData, stepNumber) {
   );
 
   if (stepData.text && stepData.text !== "") {
-    stepElement.innerHTML = `<div class="step-content" tabIndex="${stepNumber}">${stepData.text}</div>`;
+    stepElement.innerHTML = `<div class="step-content" tabIndex="0">${stepData.text}</div>`;
   } else {
-    stepElement.innerHTML = `<div class="step-content-empty" tabIndex="${stepNumber}">${stepData.text}</div>`;
+    stepElement.innerHTML = `<div class="step-content-empty" tabIndex="0">${stepData.text}</div>`;
   }
 
   return stepElement;
