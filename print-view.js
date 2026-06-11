@@ -37,49 +37,6 @@ function createActionLink(text, href, className) {
   return link;
 }
 
-function insertExportControls(isPrintView) {
-  const intro = document.getElementById("intro");
-  if (!intro) {
-    return;
-  }
-
-  const controls = document.createElement("div");
-  controls.className = "story-actions";
-
-  if (!isPrintView) {
-    controls.appendChild(
-      createActionLink(
-        "Open Print View",
-        withPrintParams(false),
-        "story-action",
-      ),
-    );
-    controls.appendChild(
-      createActionLink("Open & Print", withPrintParams(true), "story-action"),
-    );
-  } else {
-    controls.appendChild(
-      createActionLink(
-        "Back to Interactive Story",
-        withInteractiveParams(),
-        "story-action",
-      ),
-    );
-    controls.appendChild(
-      createActionLink("Print This Page", "#", "story-action"),
-    );
-
-    // Last control is the print action created above.
-    const printAction = controls.lastChild;
-    printAction.addEventListener("click", (event) => {
-      event.preventDefault();
-      window.print();
-    });
-  }
-
-  intro.appendChild(controls);
-}
-
 function createPrintMediaBlock(stepElement) {
   const dataset = stepElement.dataset;
   const media = document.createElement("div");
@@ -208,7 +165,6 @@ function convertPageToPrintView() {
 
 export function initializePrintControlsAndView() {
   const printView = isPrintViewRequested();
-  insertExportControls(printView);
 
   if (printView) {
     convertPageToPrintView();
