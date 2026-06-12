@@ -4,37 +4,11 @@
   text + media blocks so the page can be printed without sticky interactions.
 */
 
+import { isZipExportRequested, buildAndDownloadRenderedZipExport } from "./export.js";
+
 function isPrintViewRequested() {
   const params = new URLSearchParams(window.location.search);
   return params.get("view") === "print";
-}
-
-function withPrintParams(autoPrint) {
-  const url = new URL(window.location.href);
-  url.searchParams.set("view", "print");
-
-  if (autoPrint) {
-    url.searchParams.set("autoprint", "1");
-  } else {
-    url.searchParams.delete("autoprint");
-  }
-
-  return url.toString();
-}
-
-function withInteractiveParams() {
-  const url = new URL(window.location.href);
-  url.searchParams.delete("view");
-  url.searchParams.delete("autoprint");
-  return url.toString();
-}
-
-function createActionLink(text, href, className) {
-  const link = document.createElement("a");
-  link.textContent = text;
-  link.href = href;
-  link.className = className;
-  return link;
 }
 
 function createPrintMediaBlock(stepElement) {
@@ -163,11 +137,19 @@ function convertPageToPrintView() {
   }
 }
 
-export function initializePrintControlsAndView() {
+
+
+export async function initializePrintControlsAndView() {
   const printView = isPrintViewRequested();
+  const zipExportRequested = isZipExportRequested();
 
   if (printView) {
     convertPageToPrintView();
+  }
+
+  if (zipExportRequested) {
+    await buildAndDownloadRenderedZipExport();
+    return true;
   }
 
   return printView;

@@ -154,6 +154,39 @@ Many students -- and indeed, many public audiences -- access the internet primar
 
 Because the story is created in Google Sheets, students can contribute via a smartphone, although the Google Sheets editing interface in the phone app can be a little bit challenging. Some students are adept at editing on their phones, and others will get frustrated. A possible workaround (with some solid pedagogy behind it) is to have students storyboard on paper and either delegate a group member to input the steps or take turns with any available computers. Much of the creative work of scrollytelling can (and maybe should) happen offline first.
 
+### Print-friendly and accessible static view
+
+The interactive scrolly view is not ideal for printing, nor for general accessibility. A static print-friendly mode is available that converts each step into a linear text-and-media page layout, and makes tabbing through the content more predictable for those with vision loss. To access this view:
+
+- Open the hamburger menu at the top right of the page and select Print View, or
+- Append `?view=print` to the story URL to open a static layout.
+
+In print mode:
+
+- Sticky containers are converted into regular document flow blocks.
+- Image steps are rendered as static images.
+- Video steps keep the embedded frame and include a visible fallback link to the video URL.
+- Map steps are rendered as an accessible text summary and a link to OpenStreetMap using the configured coordinates.
+- Small screen sizes will position media underneath the step text and scale the media down to fit.
+
+### ZIP export
+
+If you need a portable package that can be copied to another server without fetching spreadsheet data again, append `?export=zip` to the story URL.
+
+What this does:
+
+- Runs the normal JavaScript rendering first.
+- Captures the rendered HTML as a static `index.html`.
+- Collects local file dependencies referenced by the rendered page (for example local CSS and local media files).
+- Downloads a ZIP containing a folder named `scrolly-story-export`.
+
+Notes:
+
+- External dependencies are not bundled.
+- External stylesheet and preconnect tags are removed from the exported HTML for compatibility with ZIP ingestion tools such as Manifold.
+- External images are not copied.
+
+
 ### Classroom resources
 
 Here are some resources you might find helpful in the classroom (or for your own purposes!):

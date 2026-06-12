@@ -59,7 +59,6 @@
 
 @media print {
   #mobile-warning,
-  .story-actions,
   #error-container,
   .soundcite-audio {
     display: none !important;

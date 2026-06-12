@@ -1,0 +1,11 @@
+/* export.css contains styles for the ZIP export status display */
+
+.export-status {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+}
+
+.export-status-error {
+  color: #b00020;
+  font-weight: 700;
+}
