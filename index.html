@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="scrolly.css" />
   <link rel="stylesheet" href="print.css" />
   <link rel="stylesheet" href="export.css" />
+  <link rel="stylesheet" href="menu.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -38,12 +39,29 @@
   <script src="leaflet-maps.js" type="module"></script>
   <script src="fetch-story-data.js" type="module"></script>
   <script src="scrolly.js" type="module"></script>
+  <script src="menu.js" type="module"></script>
 
   <!-- DOM Purify ensures user input can't be used for scripting tomfoolery -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.3/dist/purify.min.js"></script>
 </head>
 
 <body>
+  <div class="top-menu" id="top-menu">
+    <button id="top-menu-toggle" class="top-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"
+      aria-controls="top-menu-list">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="top-menu-list" id="top-menu-list" role="menu" hidden>
+      <button id="toggle-view-action" class="top-menu-item" type="button" role="menuitem">
+        Switch to Print View
+      </button>
+      <button id="export-action" class="top-menu-item" type="button" role="menuitem">
+        Export to ZIP file
+      </button>
+    </div>
+  </div>
   <main>
     <section id="intro">
       <h1 id="story-title">Scrolly Story</h1>

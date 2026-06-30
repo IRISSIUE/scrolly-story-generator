@@ -9,14 +9,11 @@ import {
   buildAndDownloadRenderedZipExport,
 } from "./export.js";
 import { createLeafletMapImageDataUrl } from "./leaflet-maps.js";
+import { isPrintView } from "./common.js";
 
 const PRINT_MAP_IMAGE_WIDTH = 900;
 const PRINT_MAP_IMAGE_HEIGHT = 540;
-
-function isPrintViewRequested() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("view") === "print";
-}
+const printView = isPrintView();
 
 function buildOpenStreetMapLink(latitude, longitude, zoomLevel) {
   return `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=${zoomLevel}/${latitude}/${longitude}`;
@@ -188,7 +185,6 @@ async function convertPageToPrintView() {
 }
 
 export async function initializePrintControlsAndView() {
-  const printView = isPrintViewRequested();
   const zipExportRequested = isZipExportRequested();
 
   if (printView) {

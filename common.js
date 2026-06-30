@@ -23,7 +23,7 @@ export class StoryData {
     backgroundColor,
     scrollBoxBackgroundColor,
     scrollBoxTextColor,
-    footer
+    footer,
   ) {
     this.scrollType = DOMPurify.sanitize(scrollType);
     this.title = DOMPurify.sanitize(title);
@@ -32,11 +32,11 @@ export class StoryData {
     this.authors = DOMPurify.sanitize(authors);
     // don't sanitize numeric values as that will make "0" become ""
     this.textHorizontalPercentage = stripPercentageCharIfExists(
-      textHorizontalPercentage
+      textHorizontalPercentage,
     );
     this.backgroundColor = DOMPurify.sanitize(backgroundColor);
     this.scrollBoxBackgroundColor = DOMPurify.sanitize(
-      scrollBoxBackgroundColor
+      scrollBoxBackgroundColor,
     );
     this.scrollBoxTextColor = DOMPurify.sanitize(scrollBoxTextColor);
     this.footer = DOMPurify.sanitize(footer);
@@ -88,7 +88,7 @@ export class StepData {
     zoomLevel,
     imageOrientation,
     textHorizontalPercentage,
-    text
+    text,
   ) {
     this.contentType = DOMPurify.sanitize(contentType);
     this.filePath = DOMPurify.sanitize(filePath);
@@ -99,7 +99,7 @@ export class StepData {
     this.imageOrientation = DOMPurify.sanitize(imageOrientation);
     // don't sanitize numeric values as that will make "0" become ""
     this.textHorizontalPercentage = stripPercentageCharIfExists(
-      textHorizontalPercentage
+      textHorizontalPercentage,
     );
 
     this.text = DOMPurify.sanitize(text);
@@ -133,8 +133,8 @@ export class StepData {
         actionTextIfError,
         invalidContentTypeString,
         `You must enter a valid value in the Content Type field, one of: ${validContentTypes.join(
-          ", "
-        )}`
+          ", ",
+        )}`,
       );
     }
   }
@@ -147,7 +147,7 @@ export class StepData {
       throw new ScrollyError(
         actionTextIfError,
         `AltText is a required field`,
-        `AltText is needed to explain what an image, video, or map is displaying, for those with visual impairments`
+        `AltText is needed to explain what an image, video, or map is displaying, for those with visual impairments`,
       );
     }
   }
@@ -162,7 +162,7 @@ export class StepData {
       throw new ScrollyError(
         actionTextIfError,
         `Latitude of ${this.latitude} is invalid`,
-        'Latitude must be between -90.0 and 90.0 for content type "map"'
+        'Latitude must be between -90.0 and 90.0 for content type "map"',
       );
     }
   }
@@ -177,7 +177,7 @@ export class StepData {
       throw new ScrollyError(
         actionTextIfError,
         `Longitude of ${this.longitude} is invalid`,
-        'Longitude must be between -180.0 and 180.0 for content type "map"'
+        'Longitude must be between -180.0 and 180.0 for content type "map"',
       );
     }
   }
@@ -190,7 +190,7 @@ export class StepData {
       throw new ScrollyError(
         actionTextIfError,
         `ZoomLevel of "${this.zoomLevel}" is invalid`,
-        "ZoomLevel must be a number"
+        "ZoomLevel must be a number",
       );
     }
   }
@@ -200,7 +200,7 @@ export function validateStepDataArray(stepDataArray, actionTextIfError) {
   var step = 1;
   stepDataArray.forEach((stepData) => {
     stepData.validate(
-      actionTextIfError + ", step " + step + " (line " + (step + 1) + ")"
+      actionTextIfError + ", step " + step + " (line " + (step + 1) + ")",
     );
     step++;
   });
@@ -249,4 +249,9 @@ export function displayThenThrowError(stepError) {
   // we display the error in HTML so that the full stack trace is available
   // to the user in the console
   throw stepError;
+}
+
+export function isPrintView() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("view") === "print";
 }
