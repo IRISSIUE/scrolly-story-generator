@@ -171,13 +171,14 @@ function downloadBlob(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
 }
 
-export async function buildAndDownloadRenderedZipExport() {
+export async function buildAndDownloadRenderedZipExport(onStatus) {
+  const reportProgress = onStatus ?? upsertExportStatus;
   document.body.classList.add("export-running");
-  upsertExportStatus("Preparing rendered export...");
+  reportProgress("Preparing rendered export...");
 
   try {
     const { html, dependencies } = buildStaticExportHtmlAndDependencies();
-    upsertExportStatus("Collecting local files for ZIP package...");
+    reportProgress("Collecting local files for ZIP package...");
 
     const JSZip = await loadJSZipLibrary();
     const zip = new JSZip();
@@ -196,7 +197,8 @@ export async function buildAndDownloadRenderedZipExport() {
       rootFolder.file(relativePath, bytes);
     }
 
-    upsertExportStatus("Creating ZIP archive...");
+    reportProgress("Creating ZIP archive...");
+
     const zipBlob = await zip.generateAsync({ type: "blob" });
 
     const safeTitle = (document.title || "scrolly-story")
@@ -208,11 +210,17 @@ export async function buildAndDownloadRenderedZipExport() {
     const baseName = safeTitle || "scrolly-story";
     downloadBlob(zipBlob, `${baseName}-rendered-export.zip`);
 
-    upsertExportStatus(
-      `Done. Downloaded ZIP with rendered HTML and ${dependencies.size} local dependencies.`,
-    );
+    const successMessage = `Done. Downloaded ZIP with rendered HTML and ${dependencies.size} local dependencies.`;
+    if (!onStatus) {
+      upsertExportStatus(successMessage);
+    }
+    return { success: true, message: successMessage };
   } catch (error) {
-    upsertExportStatus(`Export failed: ${error.message}`, true);
+    const errorMessage = `Export failed: ${error.message}`;
+    if (!onStatus) {
+      upsertExportStatus(errorMessage, true);
+    }
+    return { success: false, message: errorMessage };
   } finally {
     document.body.classList.remove("export-running");
   }

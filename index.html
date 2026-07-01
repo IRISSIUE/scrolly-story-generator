@@ -181,6 +181,16 @@
       <p id="end-text"></p>
     </section>
   </main>
+  <dialog id="export-dialog" aria-labelledby="export-dialog-heading">
+    <p id="export-dialog-heading" class="export-dialog-heading">Export to ZIP?</p>
+    <p id="export-dialog-body">This will package the rendered story as a self-contained ZIP archive.</p>
+    <div class="export-dialog-actions">
+      <button id="export-dialog-cancel" class="export-dialog-btn" type="button">Cancel</button>
+      <button id="export-dialog-run" class="export-dialog-btn export-dialog-btn-primary" type="button">Export</button>
+      <button id="export-dialog-close" class="export-dialog-btn export-dialog-btn-primary" type="button"
+        hidden>Close</button>
+    </div>
+  </dialog>
   <div class="soundcite-audio" aria-hidden="true"></div>
 </body>
 

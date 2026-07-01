@@ -66,3 +66,69 @@
   background: #f1f1f1;
   outline: none;
 }
+
+#export-dialog {
+  border: 1px solid #dadada;
+  border-radius: 10px;
+  padding: 1.5rem;
+  max-width: 22rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+#export-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.export-dialog-heading {
+  font-family: "Josefin Sans", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+}
+
+#export-dialog-body {
+  font-size: 0.96rem;
+  margin-bottom: 1.25rem;
+  min-height: 1.4rem;
+}
+
+.export-dialog-error {
+  color: #c0392b;
+}
+
+.export-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.export-dialog-btn {
+  border: 1px solid #dadada;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #ffffff;
+  color: #2f2f2f;
+}
+
+.export-dialog-btn:hover:not(:disabled) {
+  background: #f1f1f1;
+}
+
+.export-dialog-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.export-dialog-btn-primary {
+  background: #3b3b3b;
+  color: #ffffff;
+  border-color: #3b3b3b;
+}
+
+.export-dialog-btn-primary:hover:not(:disabled) {
+  background: #555555;
+  border-color: #555555;
+}

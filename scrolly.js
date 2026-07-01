@@ -8,10 +8,6 @@ import { StepData, isPrintView } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
 import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
 import { convertPageToPrintView } from "./print-view.js";
-import {
-  isZipExportRequested,
-  buildAndDownloadRenderedZipExport,
-} from "./export.js";
 
 let _stickyImageContainer = null;
 let _stickyMapContainer = null;
@@ -32,10 +28,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (printView) {
     await convertPageToPrintView();
     return;
-  }
-
-  if (isZipExportRequested()) {
-    await buildAndDownloadRenderedZipExport();
   }
 
   // initialize scrollama after the scrolly content has been created

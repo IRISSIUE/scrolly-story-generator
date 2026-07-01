@@ -38,6 +38,55 @@ function openMenu(menuList, menuToggleButton) {
   menuToggleButton.setAttribute("aria-expanded", "true");
 }
 
+function showExportDialog() {
+  document.getElementById("export-dialog-heading").textContent =
+    "Export to ZIP";
+  const body = document.getElementById("export-dialog-body");
+  body.textContent =
+    "This will package the rendered story as a self-contained ZIP archive.";
+  body.className = "";
+  document.getElementById("export-dialog-cancel").hidden = false;
+  const runBtn = document.getElementById("export-dialog-run");
+  runBtn.hidden = false;
+  runBtn.disabled = false;
+  runBtn.textContent = "Export";
+  document.getElementById("export-dialog-close").hidden = true;
+  document.getElementById("export-dialog").showModal();
+}
+
+function setExportRunning() {
+  document.getElementById("export-dialog-heading").textContent =
+    "Exporting\u2026";
+  document.getElementById("export-dialog-cancel").hidden = true;
+  const runBtn = document.getElementById("export-dialog-run");
+  runBtn.disabled = true;
+  runBtn.textContent = "Exporting\u2026";
+}
+
+function updateExportDialogStatus(message) {
+  document.getElementById("export-dialog-body").textContent = message;
+}
+
+function setExportComplete(message) {
+  document.getElementById("export-dialog-heading").textContent =
+    "Export Complete";
+  const body = document.getElementById("export-dialog-body");
+  body.textContent = message;
+  body.className = "";
+  document.getElementById("export-dialog-run").hidden = true;
+  document.getElementById("export-dialog-close").hidden = false;
+}
+
+function setExportFailed(message) {
+  document.getElementById("export-dialog-heading").textContent =
+    "Export Failed";
+  const body = document.getElementById("export-dialog-body");
+  body.textContent = message;
+  body.className = "export-dialog-error";
+  document.getElementById("export-dialog-run").hidden = true;
+  document.getElementById("export-dialog-close").hidden = false;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const menuRoot = document.getElementById("top-menu");
   const menuToggleButton = document.getElementById("top-menu-toggle");
@@ -70,10 +119,37 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleViewMode();
   });
 
-  exportButton.addEventListener("click", async () => {
+  exportButton.addEventListener("click", () => {
     closeMenu(menuList, menuToggleButton);
-    await buildAndDownloadRenderedZipExport();
+    showExportDialog();
   });
+
+  const exportDialog = document.getElementById("export-dialog");
+  document
+    .getElementById("export-dialog-cancel")
+    .addEventListener("click", () => {
+      exportDialog.close();
+    });
+
+  document
+    .getElementById("export-dialog-run")
+    .addEventListener("click", async () => {
+      setExportRunning();
+      const result = await buildAndDownloadRenderedZipExport(
+        updateExportDialogStatus,
+      );
+      if (result.success) {
+        setExportComplete(result.message);
+      } else {
+        setExportFailed(result.message);
+      }
+    });
+
+  document
+    .getElementById("export-dialog-close")
+    .addEventListener("click", () => {
+      exportDialog.close();
+    });
 
   document.addEventListener("click", (event) => {
     if (!menuRoot.contains(event.target)) {
