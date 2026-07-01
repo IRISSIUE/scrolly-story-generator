@@ -4,11 +4,14 @@
   that step. It also handles transitions between different types of content (images, maps, videos). 
 */
 
-import { StepData } from "./common.js";
+import { StepData, isPrintView } from "./common.js";
 import { createAllStoryScrollyContentInHTML } from "./create-content.js";
 import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
-import { initializePrintControlsAndView } from "./print-view.js";
-import { buildAndDownloadRenderedZipExport } from "./export.js";
+import { convertPageToPrintView } from "./print-view.js";
+import {
+  isZipExportRequested,
+  buildAndDownloadRenderedZipExport,
+} from "./export.js";
 
 let _stickyImageContainer = null;
 let _stickyMapContainer = null;
@@ -25,13 +28,20 @@ let scroller = scrollama();
 document.addEventListener("DOMContentLoaded", async function () {
   await createAllStoryScrollyContentInHTML();
 
-  const isPrintView = await initializePrintControlsAndView();
-  if (isPrintView) {
+  const printView = isPrintView();
+  if (printView) {
+    await convertPageToPrintView();
     return;
   }
 
+  if (isZipExportRequested()) {
+    await buildAndDownloadRenderedZipExport();
+  }
+
   // initialize scrollama after the scrolly content has been created
-  initScrollama();
+  if (!printView) {
+    initScrollama();
+  }
 });
 
 // scrollama event handlers

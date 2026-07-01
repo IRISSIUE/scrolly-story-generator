@@ -4,16 +4,10 @@
   text + media blocks so the page can be printed without sticky interactions.
 */
 
-import {
-  isZipExportRequested,
-  buildAndDownloadRenderedZipExport,
-} from "./export.js";
 import { createLeafletMapImageDataUrl } from "./leaflet-maps.js";
-import { isPrintView } from "./common.js";
 
 const PRINT_MAP_IMAGE_WIDTH = 900;
 const PRINT_MAP_IMAGE_HEIGHT = 540;
-const printView = isPrintView();
 
 function buildOpenStreetMapLink(latitude, longitude, zoomLevel) {
   return `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=${zoomLevel}/${latitude}/${longitude}`;
@@ -169,7 +163,7 @@ async function buildPrintableContentSection() {
   contentSection.appendChild(printableContainer);
 }
 
-async function convertPageToPrintView() {
+export async function convertPageToPrintView() {
   document.body.classList.add("print-view");
   await buildPrintableContentSection();
 
@@ -182,19 +176,4 @@ async function convertPageToPrintView() {
   if (params.get("autoprint") === "1") {
     setTimeout(() => window.print(), 200);
   }
-}
-
-export async function initializePrintControlsAndView() {
-  const zipExportRequested = isZipExportRequested();
-
-  if (printView) {
-    await convertPageToPrintView();
-  }
-
-  if (zipExportRequested) {
-    await buildAndDownloadRenderedZipExport();
-    return true;
-  }
-
-  return printView;
 }
