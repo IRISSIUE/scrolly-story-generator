@@ -16,11 +16,13 @@ let leafletMapId = null;
 function displayStickyMap(id, lat, long, zoom) {
   console.log("Displaying map:", { leafletMapId, id, lat, long, zoom });
   const container = document.getElementById(id);
+  /*
   console.log("Container dimensions:", {
     width: container.clientWidth,
     height: container.clientHeight,
     display: window.getComputedStyle(container).display,
   });
+  */
 
   if (id != leafletMapId) {
     removeCurrentLeafletMap();
@@ -54,7 +56,7 @@ function moveStickyMapLocation(lat, long, zoom) {
 }
 
 function createStickyMap(id, lat, long, zoom) {
-  console.log("Creating new leaflet map in container:", id);
+
   leafletMap = L.map(id, {
     center: [lat, long],
     zoom: zoom,
@@ -97,19 +99,21 @@ function invalidateLeafletMapSize() {
 }
 
 function clampMapZoom(zoomValue) {
-  if (!Number.isFinite(zoomValue)) {
+  const normalizedZoom = Number(zoomValue);
+
+  if (!Number.isFinite(normalizedZoom)) {
     return 10;
   }
 
-  if (zoomValue > MAP_MAX_ZOOM) {
+  if (normalizedZoom > MAP_MAX_ZOOM) {
     return MAP_MAX_ZOOM;
   }
 
-  if (zoomValue < MAP_MIN_ZOOM) {
+  if (normalizedZoom < MAP_MIN_ZOOM) {
     return MAP_MIN_ZOOM;
   }
 
-  return zoomValue;
+  return normalizedZoom;
 }
 
 function waitForLeafletTiles(tileLayer, timeoutMs = 6000) {
