@@ -171,20 +171,9 @@ In print mode:
 
 ### ZIP export
 
-If you need a portable package that can be copied to another server without fetching spreadsheet data again, append `?export=zip` to the story URL.
+If you want a portable package that can be copied to another server without fetching or depending on spreadsheet data again, open the hamburger menu at the top right of the page and select the Export option. This will download a ZIP file containing the story you created along with the images used in the story that are local to the GitHub repository.
 
-What this does:
-
-- Runs the normal JavaScript rendering first.
-- Captures the rendered HTML as a static `index.html`.
-- Collects local file dependencies referenced by the rendered page (for example local CSS and local media files).
-- Downloads a ZIP containing a folder named `scrolly-story-export`.
-
-Notes:
-
-- External dependencies are not bundled.
-- External stylesheet and preconnect tags are removed from the exported HTML for compatibility with ZIP ingestion tools such as Manifold.
-- External images are not copied.
+The downloaded zip will no longer depend on GitHub Pages or spreadsheet data. However, you'll still need to run the index.html file using a web server for it to work properly.
 
 
 ### Classroom resources
