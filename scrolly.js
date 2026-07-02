@@ -5,7 +5,6 @@
 */
 
 import { StepData, isPrintView } from "./common.js";
-import { createAllStoryScrollyContentInHTML } from "./create-content.js";
 import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
 import { convertPageToPrintView } from "./print-view.js";
 
@@ -22,7 +21,12 @@ const transitionInMilliseconds = 500;
 let scroller = scrollama();
 
 document.addEventListener("DOMContentLoaded", async function () {
-  await createAllStoryScrollyContentInHTML();
+  const isRenderedExport = window.__SCROLLY_EXPORTED_RENDERED__ === true;
+  if (!isRenderedExport) {
+    const { createAllStoryScrollyContentInHTML } =
+      await import("./create-content.js");
+    await createAllStoryScrollyContentInHTML();
+  }
 
   const printView = isPrintView();
   if (printView) {

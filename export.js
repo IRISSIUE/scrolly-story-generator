@@ -6,6 +6,22 @@
 const ZIP_EXPORT_FOLDER = "scrolly-story-export";
 const ZIP_EXPORT_PARAM = "zip";
 
+// Scripts only needed in the live app. Excluded from rendered exports.
+const EXPORT_EXCLUDED_SCRIPTS = new Set([
+  "fetch-story-data.js",
+  "create-content.js",
+  "google-sheet-config.js",
+  "menu.js",
+  "export.js",
+]);
+
+// Stylesheets belonging to excluded features.
+const EXPORT_EXCLUDED_STYLES = new Set(["menu.css", "export.css"]);
+
+// JS modules imported at runtime via import statements rather than explicit
+// <script> tags, so they won't be found by scanning the DOM alone.
+const EXPORT_TRANSITIVE_JS = ["print-view.js", "common.js"];
+
 function isZipExportRequested() {
   const params = new URLSearchParams(window.location.search);
   return params.get("export") === ZIP_EXPORT_PARAM;
@@ -63,36 +79,18 @@ function getPathRelativeToCurrentPageDirectory(pathname) {
   return pathname.replace(/^\//, "");
 }
 
-function removeExternalLinkDependencies(clonedDocument) {
-  clonedDocument.querySelectorAll("link[href]").forEach((linkElement) => {
-    const href = linkElement.getAttribute("href");
-    if (!href) {
-      return;
-    }
-
-    let parsedUrl;
-    try {
-      parsedUrl = new URL(href, window.location.href);
-    } catch {
-      return;
-    }
-
-    if (parsedUrl.origin !== window.location.origin) {
-      linkElement.remove();
-    }
-  });
-}
-
 function rewriteAndCollectLocalDependencies(clonedDocument) {
   const dependencies = new Map();
   const elementsToInspect = [
     ["link[href]", "href"],
+    ["script[src]", "src"],
     ["img[src]", "src"],
     ["video[src]", "src"],
     ["audio[src]", "src"],
     ["source[src]", "src"],
     ["iframe[src]", "src"],
     ["object[data]", "data"],
+    [".step[data-file-path]", "data-file-path"],
   ];
 
   elementsToInspect.forEach(([selector, attrName]) => {
@@ -131,26 +129,62 @@ function rewriteAndCollectLocalDependencies(clonedDocument) {
 }
 
 function buildStaticExportHtmlAndDependencies() {
-  const clonedDocument = document.cloneNode(true);
+  const currentDocumentContent = document.cloneNode(true);
 
-  clonedDocument.querySelectorAll("script").forEach((scriptNode) => {
-    scriptNode.remove();
-  });
-
-  clonedDocument.querySelectorAll("#export-status").forEach((node) => {
+  currentDocumentContent.querySelectorAll("#export-status").forEach((node) => {
     node.remove();
   });
 
-  clonedDocument.body.classList.remove("export-running");
+  currentDocumentContent.body.classList.remove("export-running");
 
-  // Manifold treats absolute URLs in link tags as package-relative paths.
-  // External stylesheets and preconnect hints are not part of this local export.
-  removeExternalLinkDependencies(clonedDocument);
+  // In rendered export mode, scrolly.js uses existing DOM instead of fetching spreadsheet data.
+  const renderedExportFlagScript =
+    currentDocumentContent.createElement("script");
+  renderedExportFlagScript.textContent =
+    "window.__SCROLLY_EXPORTED_RENDERED__ = true;";
+  currentDocumentContent.head.prepend(renderedExportFlagScript);
 
-  const dependencies = rewriteAndCollectLocalDependencies(clonedDocument);
+  // Remove scripts not needed in the rendered export.
+  currentDocumentContent
+    .querySelectorAll("script[src]")
+    .forEach((scriptNode) => {
+      const src = scriptNode.getAttribute("src");
+      const basename = src ? src.split("/").pop().split("?")[0] : "";
+      if (EXPORT_EXCLUDED_SCRIPTS.has(basename)) {
+        scriptNode.remove();
+      }
+    });
+
+  // Remove stylesheets not needed in the rendered export.
+  currentDocumentContent
+    .querySelectorAll('link[rel="stylesheet"][href]')
+    .forEach((linkNode) => {
+      const href = linkNode.getAttribute("href");
+      const basename = href ? href.split("/").pop().split("?")[0] : "";
+      if (EXPORT_EXCLUDED_STYLES.has(basename)) {
+        linkNode.remove();
+      }
+    });
+
+  // Remove menu UI — not needed in the rendered export.
+  currentDocumentContent
+    .querySelectorAll(".top-menu, #export-dialog")
+    .forEach((el) => el.remove());
+
+  const dependencies = rewriteAndCollectLocalDependencies(
+    currentDocumentContent,
+  );
+
+  // Add transitive JS dependencies that are loaded via import statements
+  // rather than explicit <script> tags, so they won't be found from the DOM alone.
+  EXPORT_TRANSITIVE_JS.forEach((jsFile) => {
+    if (!dependencies.has(jsFile)) {
+      dependencies.set(jsFile, new URL(jsFile, window.location.href).href);
+    }
+  });
 
   const doctype = "<!DOCTYPE html>\n";
-  const html = `${doctype}${clonedDocument.documentElement.outerHTML}`;
+  const html = `${doctype}${currentDocumentContent.documentElement.outerHTML}`;
   return { html, dependencies };
 }
 
@@ -208,7 +242,7 @@ export async function buildAndDownloadRenderedZipExport(onStatus) {
       .slice(0, 60);
 
     const baseName = safeTitle || "scrolly-story";
-    downloadBlob(zipBlob, `${baseName}-rendered-export.zip`);
+    downloadBlob(zipBlob, `${baseName}-export.zip`);
 
     const successMessage = `Done. Downloaded ZIP with rendered HTML and ${dependencies.size} local dependencies.`;
     if (!onStatus) {
