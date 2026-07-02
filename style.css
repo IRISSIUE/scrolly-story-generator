@@ -23,11 +23,20 @@ a {
   font-weight: 400;
 }
 
+.intro-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 0 0.75rem;
+  flex-wrap: nowrap;
+}
+
 #intro {
+  flex: 0 1 auto;
   max-width: 40rem;
-  margin: 1rem auto;
+  margin: 1rem 0 50px 0;
+  padding: 0 3rem;
   text-align: center;
-  margin-bottom: 50px;
 }
 
 #story-title {
@@ -36,7 +45,7 @@ a {
   font-weight: 700;
   font-style: normal;
   font-size: 3rem;
-  margin: 2rem 2rem 0.5rem 2rem;
+  margin: 1rem 1rem 0.5rem 1rem;
 }
 
 #subtitle {

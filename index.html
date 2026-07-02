@@ -46,23 +46,7 @@
 </head>
 
 <body>
-  <div class="top-menu" id="top-menu">
-    <button id="top-menu-toggle" class="top-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"
-      aria-controls="top-menu-list">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    <div class="top-menu-list" id="top-menu-list" role="menu" hidden>
-      <button id="toggle-view-action" class="top-menu-item" type="button" role="menuitem">
-        Switch to Print View
-      </button>
-      <button id="export-action" class="top-menu-item" type="button" role="menuitem">
-        Export to ZIP file
-      </button>
-    </div>
-  </div>
-  <main>
+  <header class="intro-header">
     <section id="intro">
       <h1 id="story-title">Scrolly Story</h1>
       <p id="subtitle"></p>
@@ -73,6 +57,25 @@
           for a better viewing experience.</p>
       </div>
     </section>
+    <div class="top-menu" id="top-menu">
+      <button id="top-menu-toggle" class="top-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"
+        aria-controls="top-menu-list">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="top-menu-list" id="top-menu-list" role="menu" hidden>
+        <button id="toggle-view-action" class="top-menu-item" type="button" role="menuitem">
+          Switch to Print View
+        </button>
+        <button id="export-action" class="top-menu-item" type="button" role="menuitem">
+          Export to ZIP file
+        </button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section id="intro-placeholder"></section>
 
     <!-- The error dialog is only displayed when there is an error-->
     <section id="error-container">
