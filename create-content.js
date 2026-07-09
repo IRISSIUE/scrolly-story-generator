@@ -27,6 +27,12 @@ export async function createAllStoryScrollyContentInHTML() {
       allScrollyData.storyData.textHorizontalPercentage,
     );
 
+    createTimelineInHtml(
+      allScrollyData.storyData.timelineStart,
+      allScrollyData.storyData.timelineEnd,
+      allScrollyData.storyData.timelineTickInterval,
+    );
+
     createStoryContentInHtml(allScrollyData.storyData);
     createStepsContentInHtml(allScrollyData.stepData);
 
@@ -125,6 +131,136 @@ function getValidHorizontalPercentage(inputPercentage) {
     horizontalPercentageNum = defaultTextHorizontalPercentage;
   }
   return horizontalPercentageNum.toString();
+}
+
+function createTimelineInHtml(
+  timelineStart,
+  timelineEnd,
+  timelineTickInterval,
+) {
+  const timelineSection = document.getElementById("timeline");
+  const startDate = parseTimelineDate(timelineStart);
+  const endDate = parseTimelineDate(timelineEnd);
+  const tickIntervalYears = Number(timelineTickInterval);
+
+  if (
+    !validateTimelineInputs(
+      timelineSection,
+      startDate,
+      endDate,
+      tickIntervalYears,
+    )
+  ) {
+    return;
+  }
+
+  timelineSection.removeAttribute("hidden");
+  document.body.classList.add("has-fixed-timeline");
+
+  const tickDates = buildTimelineTickDates(
+    startDate,
+    endDate,
+    tickIntervalYears,
+  );
+  const totalRangeMs = endDate.getTime() - startDate.getTime();
+
+  const ticksHtml = tickDates
+    .map((tickDate) => {
+      const leftPercentage =
+        totalRangeMs === 0
+          ? 0
+          : ((tickDate.getTime() - startDate.getTime()) / totalRangeMs) * 100;
+      return `<div class="timeline-tick" style="left: ${leftPercentage}%"><span class="timeline-tick-mark" aria-hidden="true"></span><span class="timeline-tick-label">${formatTimelineDate(tickDate)}</span></div>`;
+    })
+    .join("");
+
+  timelineSection.innerHTML = `
+    <div class="timeline-container" aria-label="Timeline from ${formatTimelineDate(startDate)} to ${formatTimelineDate(endDate)}">
+      <div class="timeline-track" aria-hidden="true"></div>
+      ${ticksHtml}
+    </div>
+  `;
+}
+
+function validateTimelineInputs(
+  timelineHTMLSection,
+  startDate,
+  endDate,
+  tickIntervalYears,
+) {
+  if (!timelineHTMLSection) {
+    return false;
+  }
+
+  if (
+    !startDate ||
+    !endDate ||
+    !Number.isInteger(tickIntervalYears) ||
+    tickIntervalYears <= 0 ||
+    startDate > endDate
+  ) {
+    console.log(
+      "Invalid or no timeline inputs specified. Timeline will not be displayed.",
+    );
+    console.log(
+      "Start Date:",
+      startDate,
+      "End Date:",
+      endDate,
+      "Tick Interval:",
+      tickIntervalYears,
+    );
+    return false;
+  }
+  return true;
+}
+
+function parseTimelineDate(inputDate) {
+  if (!inputDate) {
+    return null;
+  }
+
+  const parsedDate = new Date(inputDate);
+  if (isNaN(parsedDate.getTime())) {
+    return null;
+  }
+
+  return parsedDate;
+}
+
+function buildTimelineTickDates(startDate, endDate, tickIntervalYears) {
+  const tickDates = [startDate];
+
+  let nextTickDate = new Date(startDate);
+  while (true) {
+    nextTickDate = new Date(nextTickDate);
+    nextTickDate.setFullYear(nextTickDate.getFullYear() + tickIntervalYears);
+
+    if (nextTickDate >= endDate) {
+      break;
+    }
+
+    tickDates.push(new Date(nextTickDate));
+  }
+
+  const lastTick = tickDates[tickDates.length - 1];
+  if (lastTick.getTime() !== endDate.getTime()) {
+    tickDates.push(endDate);
+  }
+
+  return tickDates;
+}
+
+function formatTimelineDate(date) {
+  if (date.getMonth() === 0 && date.getDate() === 1) {
+    return date.getFullYear().toString();
+  }
+
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 /* 

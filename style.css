@@ -78,6 +78,78 @@ a {
   justify-content: center;
 }
 
+#timeline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 120;
+  padding: 1.25rem 3rem 1.75rem 3rem;
+  background-color: rgba(255, 255, 255, 0.94);
+  border-top: 1px solid rgba(59, 59, 59, 0.18);
+  backdrop-filter: blur(2px);
+}
+
+#timeline:empty {
+  display: none;
+}
+
+body.has-fixed-timeline main {
+  padding-bottom: 7.5rem;
+}
+
+.timeline-container {
+  position: relative;
+  min-height: 4rem;
+}
+
+.timeline-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0.5rem;
+  height: 2px;
+  background-color: #3b3b3b;
+}
+
+.timeline-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.timeline-tick-mark {
+  width: 2px;
+  height: 0.85rem;
+  background-color: #3b3b3b;
+  margin-bottom: 0.45rem;
+}
+
+.timeline-tick-label {
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 768px) {
+  #timeline {
+    padding: 1rem 1rem 1.5rem 1rem;
+  }
+
+  .timeline-tick-label {
+    font-size: 0.78rem;
+  }
+
+  body.has-fixed-timeline main {
+    padding-bottom: 6.75rem;
+  }
+}
+
 @media (min-width: 840px) {
   .nav__examples {
     margin-top: 0;
