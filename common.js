@@ -24,6 +24,9 @@ export class StoryData {
     scrollBoxBackgroundColor,
     scrollBoxTextColor,
     footer,
+    timelineStart,
+    timelineEnd,
+    timelineTickInterval,
   ) {
     this.scrollType = DOMPurify.sanitize(scrollType);
     this.title = DOMPurify.sanitize(title);
@@ -40,10 +43,74 @@ export class StoryData {
     );
     this.scrollBoxTextColor = DOMPurify.sanitize(scrollBoxTextColor);
     this.footer = DOMPurify.sanitize(footer);
+    this.timelineStart = DOMPurify.sanitize(timelineStart);
+    this.timelineEnd = DOMPurify.sanitize(timelineEnd);
+    this.timelineTickInterval = DOMPurify.sanitize(timelineTickInterval);
   }
 
   validate(actionTextIfError) {
-    // Currently allowing anything, and providing default values elsewhere
+    this.validateTimelineStart(actionTextIfError);
+    this.validateTimelineEnd(actionTextIfError);
+    this.validateTimelineTickInterval(actionTextIfError);
+    this.validateTimelineDateRange(actionTextIfError);
+  }
+
+  validateTimelineStart(actionTextIfError) {
+    if (
+      doesValueExist(this.timelineStart) &&
+      !isValidDate(this.timelineStart)
+    ) {
+      throw new ScrollyError(
+        actionTextIfError,
+        `Timeline Start Date "${this.timelineStart}" is invalid`,
+        "Timeline Start Date must be a valid date",
+      );
+    }
+  }
+
+  validateTimelineEnd(actionTextIfError) {
+    if (doesValueExist(this.timelineEnd) && !isValidDate(this.timelineEnd)) {
+      throw new ScrollyError(
+        actionTextIfError,
+        `Timeline End Date "${this.timelineEnd}" is invalid`,
+        "Timeline End Date must be a valid date",
+      );
+    }
+  }
+
+  validateTimelineTickInterval(actionTextIfError) {
+    if (!doesValueExist(this.timelineTickInterval)) {
+      return;
+    }
+
+    const tickInterval = Number(this.timelineTickInterval);
+    if (!Number.isInteger(tickInterval) || tickInterval <= 0) {
+      throw new ScrollyError(
+        actionTextIfError,
+        `Timeline Tick Interval of "${this.timelineTickInterval}" is invalid`,
+        "Timeline Tick Interval must be a positive integer number of years",
+      );
+    }
+  }
+
+  validateTimelineDateRange(actionTextIfError) {
+    if (
+      !doesValueExist(this.timelineStart) ||
+      !doesValueExist(this.timelineEnd)
+    ) {
+      return;
+    }
+
+    const startDate = new Date(this.timelineStart);
+    const endDate = new Date(this.timelineEnd);
+
+    if (startDate > endDate) {
+      throw new ScrollyError(
+        actionTextIfError,
+        "Timeline Start Date must be before Timeline End Date",
+        "Choose a start date that is earlier than or equal to the end date",
+      );
+    }
   }
 }
 
@@ -69,6 +136,15 @@ export function isNumber(value) {
 
 export function doesValueExist(value) {
   return value != null && value != "";
+}
+
+export function isValidDate(value) {
+  if (!doesValueExist(value)) {
+    return false;
+  }
+
+  const date = new Date(value);
+  return !isNaN(date.getTime());
 }
 
 function stripPercentageCharIfExists(str) {

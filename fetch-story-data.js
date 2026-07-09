@@ -27,6 +27,7 @@ export async function fetchScrollyData() {
     scrollyData = await fetchDataFromGoogleSheet();
     console.log("Fetched data from Google Sheet");
   }
+  console.log("Fetched ScrollyData:", scrollyData);
 
   return scrollyData;
 }
@@ -49,7 +50,7 @@ async function fetchDataFromServerExcelFile(excelFilePath) {
   } catch (error) {
     throw new ScrollyError(
       `Loading "${excelFilePath}" file from server`,
-      `Error: ${error.message}`
+      `Error: ${error.message}`,
     );
   }
 }
@@ -76,13 +77,13 @@ export function convertExcelDataToScrollyData(workbook, sheetsArray) {
 
 export function throwErrorIfExcelSheetIsMissingSheetNames(
   workbook,
-  expectedSheetNames
+  expectedSheetNames,
 ) {
   expectedSheetNames.forEach((sheetName) => {
     if (workbook.SheetNames.indexOf(sheetName) === -1) {
       throw new ScrollyError(
         "Processing Excel file " + excelFilePath,
-        `Spreadsheet must contain a "${sheetName}" sheet.`
+        `Spreadsheet must contain a "${sheetName}" sheet.`,
       );
     }
   });
@@ -119,7 +120,7 @@ async function fetchDataFromGoogleSheet() {
     if (!(error instanceof ScrollyError)) {
       error = new ScrollyError(
         "Fetching data from Google Sheet " + googleSheetURL,
-        error.toString()
+        error.toString(),
       );
     }
     throw error;
@@ -143,7 +144,7 @@ export function throwErrorIfGoogleSheetError(hasError, responseJson) {
 
     throw new ScrollyError(
       "Fetching data from Google Sheet " + googleSheetURL,
-      errorMessage
+      errorMessage,
     );
   }
 }
@@ -157,7 +158,7 @@ function throwErrorIfGoogleSheetIsMissingSheetNames(responseError, sheetNames) {
       ) {
         throw new ScrollyError(
           "Fetching data from Google Sheet " + googleSheetURL,
-          `Sheet name "${sheetName}" not found in the Google Sheet.`
+          `Sheet name "${sheetName}" not found in the Google Sheet.`,
         );
       }
     });
@@ -166,12 +167,12 @@ function throwErrorIfGoogleSheetIsMissingSheetNames(responseError, sheetNames) {
 
 function convertGoogleSheetDataToScrollyData(sheetsArray) {
   const storyData = convertSheetDataToStoryData(
-    sheetsArray.valueRanges[storyIndex].values
+    sheetsArray.valueRanges[storyIndex].values,
   );
   //console.log(JSON.stringify(storyData));
 
   const stepDataArray = convertSheetDataToStepDataArray(
-    sheetsArray.valueRanges[stepsIndex].values
+    sheetsArray.valueRanges[stepsIndex].values,
   );
   return new ScrollyData(storyData, stepDataArray);
 }
@@ -200,7 +201,10 @@ function convertSheetDataToStoryData(rows) {
     data[colIndex["backgroundcolor"]],
     data[colIndex["scrollboxbackgroundcolor"]],
     data[colIndex["scrollboxtextcolor"]],
-    data[colIndex["footer"]]
+    data[colIndex["footer"]],
+    data[colIndex["timelinestart"]],
+    data[colIndex["timelineend"]],
+    data[colIndex["timelinetickinterval"]],
   );
 }
 
@@ -221,7 +225,7 @@ function convertSheetDataToStepDataArray(rows) {
       row[colIndex["zoomlevel"]],
       row[colIndex["imageorientation"]],
       row[colIndex["texthorizontalpercentage"]],
-      row[colIndex["text"]]
+      row[colIndex["text"]],
     );
   });
   return stepDataArray;
