@@ -83,12 +83,21 @@ export class StoryData {
       return;
     }
 
-    const tickInterval = Number(this.timelineTickInterval);
-    if (!Number.isInteger(tickInterval) || tickInterval <= 0) {
+    const match = String(this.timelineTickInterval).match(/^(\d+)([ymd])$/);
+    if (!match && !Number(this.timelineTickInterval)) {
       throw new ScrollyError(
         actionTextIfError,
         `Timeline Tick Interval of "${this.timelineTickInterval}" is invalid`,
-        "Timeline Tick Interval must be a positive integer number of years",
+        'It must be a number followed by a unit: "y" (years), "m" (months), or "d" (days). For example: "1y", "2m", or "3d" ',
+      );
+    }
+
+    const number = Number(this.timelineTickInterval) || Number(match[1]);
+    if (number <= 0) {
+      throw new ScrollyError(
+        actionTextIfError,
+        `Timeline Tick Interval of "${this.timelineTickInterval}" is invalid`,
+        'It must be a number followed by a unit: "y" (years), "m" (months), or "d" (days). For example: "1y", "2m", or "3d" ',
       );
     }
   }

@@ -141,14 +141,16 @@ function createTimelineInHtml(
   const timelineSection = document.getElementById("timeline");
   const startDate = parseTimelineDate(timelineStart);
   const endDate = parseTimelineDate(timelineEnd);
-  const tickIntervalYears = Number(timelineTickInterval);
+  const { tickInterval, tickUnit: intervalUnit } =
+    extractTickIntervalAndUnit(timelineTickInterval);
 
   if (
     !validateTimelineInputs(
       timelineSection,
       startDate,
       endDate,
-      tickIntervalYears,
+      tickInterval,
+      intervalUnit,
     )
   ) {
     return;
@@ -160,7 +162,8 @@ function createTimelineInHtml(
   const tickDates = buildTimelineTickDates(
     startDate,
     endDate,
-    tickIntervalYears,
+    tickInterval,
+    intervalUnit,
   );
   const totalRangeMs = endDate.getTime() - startDate.getTime();
 
@@ -182,11 +185,30 @@ function createTimelineInHtml(
   `;
 }
 
+function extractTickIntervalAndUnit(tickInterval) {
+  let intervalValue = Number(tickInterval);
+  let intervalUnit = "y"; // default to years if not specified
+
+  // If no unit is specified, but valid number, assume years.
+  if (intervalValue > 0 && intervalValue != NaN) {
+    return { tickInterval: intervalValue, tickUnit: intervalUnit };
+  }
+
+  const match = String(tickInterval).match(/^(\d+)([ymd])$/);
+  if (!match) {
+    return { tickInterval: NaN, tickUnit: null };
+  }
+  intervalValue = Number(match[1]);
+  intervalUnit = match[2];
+  return { tickInterval: intervalValue, tickUnit: intervalUnit };
+}
+
 function validateTimelineInputs(
   timelineHTMLSection,
   startDate,
   endDate,
-  tickIntervalYears,
+  tickInterval,
+  intervalUnit,
 ) {
   if (!timelineHTMLSection) {
     return false;
@@ -195,9 +217,10 @@ function validateTimelineInputs(
   if (
     !startDate ||
     !endDate ||
-    !Number.isInteger(tickIntervalYears) ||
-    tickIntervalYears <= 0 ||
-    startDate > endDate
+    !Number.isInteger(tickInterval) ||
+    tickInterval <= 0 ||
+    startDate > endDate ||
+    !["y", "m", "d"].includes(intervalUnit)
   ) {
     console.log(
       "Invalid or no timeline inputs specified. Timeline will not be displayed.",
@@ -208,7 +231,9 @@ function validateTimelineInputs(
       "End Date:",
       endDate,
       "Tick Interval:",
-      tickIntervalYears,
+      tickInterval,
+      "Tick Unit:",
+      intervalUnit,
     );
     return false;
   }
@@ -247,13 +272,26 @@ function parseTimelineDate(inputDate) {
   return parsedDate;
 }
 
-function buildTimelineTickDates(startDate, endDate, tickIntervalYears) {
+function buildTimelineTickDates(
+  startDate,
+  endDate,
+  tickInterval,
+  intervalUnit,
+) {
   const tickDates = [startDate];
 
   let nextTickDate = new Date(startDate);
   while (true) {
     nextTickDate = new Date(nextTickDate);
-    nextTickDate.setFullYear(nextTickDate.getFullYear() + tickIntervalYears);
+
+    // Add interval based on unit
+    if (intervalUnit === "y") {
+      nextTickDate.setFullYear(nextTickDate.getFullYear() + tickInterval);
+    } else if (intervalUnit === "m") {
+      nextTickDate.setMonth(nextTickDate.getMonth() + tickInterval);
+    } else if (intervalUnit === "d") {
+      nextTickDate.setDate(nextTickDate.getDate() + tickInterval);
+    }
 
     if (nextTickDate >= endDate) {
       break;

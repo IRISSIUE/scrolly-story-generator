@@ -97,7 +97,7 @@ describe("Common Test Module", () => {
       );
     });
 
-    it("should throw when timeline tick interval is not a positive integer", () => {
+    it("should throw when timeline tick interval has invalid format", () => {
       const storyData = new StoryData(
         "",
         "Title",
@@ -111,11 +111,55 @@ describe("Common Test Module", () => {
         "",
         "",
         "",
-        "2.5",
+        "5",
       );
 
       expect(() => storyData.validate("Testing story data")).to.throw(
-        'Timeline Tick Interval of "2.5" is invalid',
+        'Timeline Tick Interval of "5" is invalid',
+      );
+    });
+
+    it("should throw when timeline tick interval has invalid unit", () => {
+      const storyData = new StoryData(
+        "",
+        "Title",
+        "Subtitle",
+        "End",
+        33,
+        "Author",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "5x",
+      );
+
+      expect(() => storyData.validate("Testing story data")).to.throw(
+        'Timeline Tick Interval of "5x" is invalid',
+      );
+    });
+
+    it("should throw when timeline tick interval is zero", () => {
+      const storyData = new StoryData(
+        "",
+        "Title",
+        "Subtitle",
+        "End",
+        33,
+        "Author",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0y",
+      );
+
+      expect(() => storyData.validate("Testing story data")).to.throw(
+        'Timeline Tick Interval of "0y" is invalid',
       );
     });
 
@@ -133,7 +177,7 @@ describe("Common Test Module", () => {
         "",
         "2025-01-01",
         "2024-01-01",
-        "1",
+        "1y",
       );
 
       expect(() => storyData.validate("Testing story data")).to.throw(
@@ -141,7 +185,7 @@ describe("Common Test Module", () => {
       );
     });
 
-    it("should pass when timeline values are valid", () => {
+    it("should pass when timeline values are valid with year interval", () => {
       const storyData = new StoryData(
         "",
         "Title",
@@ -155,7 +199,47 @@ describe("Common Test Module", () => {
         "",
         "2020-01-01",
         "2025-01-01",
-        "5",
+        "5y",
+      );
+
+      expect(() => storyData.validate("Testing story data")).to.not.throw();
+    });
+
+    it("should pass when timeline values are valid with month interval", () => {
+      const storyData = new StoryData(
+        "",
+        "Title",
+        "Subtitle",
+        "End",
+        33,
+        "Author",
+        "",
+        "",
+        "",
+        "",
+        "2020-01-01",
+        "2025-01-01",
+        "6m",
+      );
+
+      expect(() => storyData.validate("Testing story data")).to.not.throw();
+    });
+
+    it("should pass when timeline values are valid with day interval", () => {
+      const storyData = new StoryData(
+        "",
+        "Title",
+        "Subtitle",
+        "End",
+        33,
+        "Author",
+        "",
+        "",
+        "",
+        "",
+        "2020-01-01",
+        "2025-01-01",
+        "30d",
       );
 
       expect(() => storyData.validate("Testing story data")).to.not.throw();
