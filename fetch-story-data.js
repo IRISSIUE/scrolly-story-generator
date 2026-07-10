@@ -43,7 +43,7 @@ async function fetchDataFromServerExcelFile(excelFilePath) {
     }
 
     const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const workbook = XLSX.read(arrayBuffer, { type: "array", cellDates: true });
     throwErrorIfExcelSheetIsMissingSheetNames(workbook, sheetNames);
 
     return convertExcelDataToScrollyData(workbook, sheetNames);
@@ -72,6 +72,7 @@ export function convertExcelDataToScrollyData(workbook, sheetsArray) {
 
   const story = convertSheetDataToStoryData(excelStoryData);
   const steps = convertSheetDataToStepDataArray(excelStepsData);
+
   return new ScrollyData(story, steps);
 }
 
@@ -179,6 +180,55 @@ function convertGoogleSheetDataToScrollyData(sheetsArray) {
 
 /*------------ Common Data Conversion Functions --------------*/
 
+function normalizeDateValue(cellValue) {
+  if (cellValue instanceof Date && !isNaN(cellValue.getTime())) {
+    return cellValue.toISOString().split("T")[0];
+  }
+
+  // Numeric value: could be Excel serial date or a year
+  if (typeof cellValue === "number") {
+    // Non-integer numbers are likely Excel dates (serials like 43000.5)
+    if (!Number.isInteger(cellValue)) {
+      const parsed = XLSX.SSF.parse_date_code(cellValue);
+      if (parsed) {
+        const d = new Date(parsed.y, parsed.m - 1, parsed.d);
+        return d.toISOString().split("T")[0];
+      }
+    }
+
+    // 4-digit integers in valid year range: treat as year
+    if (Number.isInteger(cellValue) && cellValue >= 1000 && cellValue <= 2999) {
+      return cellValue.toString();
+    }
+
+    // Otherwise try as Excel serial
+    const parsed = XLSX.SSF.parse_date_code(cellValue);
+    if (parsed) {
+      const d = new Date(parsed.y, parsed.m - 1, parsed.d);
+      return d.toISOString().split("T")[0];
+    }
+  }
+
+  // String value
+  if (typeof cellValue === "string") {
+    const s = cellValue.trim();
+
+    // Year-only string like "1950"
+    if (/^\d{4}$/.test(s)) {
+      return s;
+    }
+
+    // Try to parse as date
+    const d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      return d.toISOString().split("T")[0];
+    }
+  }
+
+  // Return as-is if not a date value
+  return cellValue || "";
+}
+
 function convertSheetDataToStoryData(rows) {
   // There's only one (valid) row of data in the Story sheet, on the 2nd row (first row is header)
   const headers = rows[0];
@@ -202,8 +252,8 @@ function convertSheetDataToStoryData(rows) {
     data[colIndex["scrollboxbackgroundcolor"]],
     data[colIndex["scrollboxtextcolor"]],
     data[colIndex["footer"]],
-    data[colIndex["timelinestart"]],
-    data[colIndex["timelineend"]],
+    normalizeDateValue(data[colIndex["timelinestart"]]),
+    normalizeDateValue(data[colIndex["timelineend"]]),
     data[colIndex["timelinetickinterval"]],
   );
 }

@@ -219,8 +219,27 @@ function parseTimelineDate(inputDate) {
   if (!inputDate) {
     return null;
   }
+  const trimmedInputDate = inputDate.toString().trim();
 
-  const parsedDate = new Date(inputDate);
+  // Year-only string like "1950"
+  const yearOnlyMatch = trimmedInputDate.match(/^(\d{4})$/);
+  if (yearOnlyMatch) {
+    const year = Number(yearOnlyMatch[1]);
+    const parsedYearDate = new Date(year, 0, 1);
+    return parsedYearDate;
+  }
+
+  // ISO date string like "1950-01-01" (local time, no timezone offset)
+  const isoDateMatch = trimmedInputDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDateMatch) {
+    const year = Number(isoDateMatch[1]);
+    const month = Number(isoDateMatch[2]);
+    const day = Number(isoDateMatch[3]);
+    const parsedDate = new Date(year, month - 1, day);
+    return parsedDate;
+  }
+
+  const parsedDate = new Date(trimmedInputDate);
   if (isNaN(parsedDate.getTime())) {
     return null;
   }
@@ -247,7 +266,6 @@ function buildTimelineTickDates(startDate, endDate, tickIntervalYears) {
   if (lastTick.getTime() !== endDate.getTime()) {
     tickDates.push(endDate);
   }
-
   return tickDates;
 }
 
