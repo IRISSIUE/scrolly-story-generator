@@ -173,6 +173,7 @@ export class StepData {
     zoomLevel,
     imageOrientation,
     textHorizontalPercentage,
+    timelineDate,
     text,
   ) {
     this.contentType = DOMPurify.sanitize(contentType);
@@ -186,6 +187,7 @@ export class StepData {
     this.textHorizontalPercentage = stripPercentageCharIfExists(
       textHorizontalPercentage,
     );
+    this.timelineDate = DOMPurify.sanitize(timelineDate);
 
     this.text = DOMPurify.sanitize(text);
   }

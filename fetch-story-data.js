@@ -184,9 +184,9 @@ function normalizeDateValue(cellValue) {
     return cellValue.toISOString().split("T")[0];
   }
 
-  // Numeric value: could be Excel serial date or a year
+  // Numeric value: could be Spreadsheet serial date or a year
   if (typeof cellValue === "number") {
-    // Non-integer numbers are likely Excel dates (serials like 43000.5)
+    // Non-integer numbers are likely Spreadsheet dates (serials like 43000.5)
     if (!Number.isInteger(cellValue)) {
       const parsed = XLSX.SSF.parse_date_code(cellValue);
       if (parsed) {
@@ -200,7 +200,7 @@ function normalizeDateValue(cellValue) {
       return cellValue.toString();
     }
 
-    // Otherwise try as Excel serial
+    // Otherwise try as Spreadsheet serial
     const parsed = XLSX.SSF.parse_date_code(cellValue);
     if (parsed) {
       const d = new Date(parsed.y, parsed.m - 1, parsed.d);
@@ -274,6 +274,7 @@ function convertSheetDataToStepDataArray(rows) {
       row[colIndex["zoomlevel"]],
       row[colIndex["imageorientation"]],
       row[colIndex["texthorizontalpercentage"]],
+      row[colIndex["timelinedate"]],
       row[colIndex["text"]],
     );
   });
