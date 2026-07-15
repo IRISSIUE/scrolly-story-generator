@@ -27,7 +27,6 @@ export async function fetchScrollyData() {
     scrollyData = await fetchDataFromGoogleSheet();
     console.log("Fetched data from Google Sheet");
   }
-  console.log("Fetched ScrollyData:", scrollyData);
 
   return scrollyData;
 }
