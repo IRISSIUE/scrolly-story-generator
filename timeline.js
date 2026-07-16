@@ -1,3 +1,7 @@
+let timelineStartDate = null;
+let timelineEndDate = null;
+let displayYearsOnly = false;
+
 function createTimelineInHtml(
   timelineStart,
   timelineEnd,
@@ -30,9 +34,12 @@ function createTimelineInHtml(
     tickInterval,
     intervalUnit,
   );
+  timelineStartDate = startDate;
+  timelineEndDate = endDate;
+
   const totalRangeMs = endDate.getTime() - startDate.getTime();
 
-  const displayYearsOnly = areAllDatesJanuaryFirst(tickDates);
+  displayYearsOnly = areAllDatesJanuaryFirst(tickDates);
 
   const ticksHtml = tickDates
     .map((tickDate) => {
@@ -46,10 +53,72 @@ function createTimelineInHtml(
 
   timelineSection.innerHTML = `
     <div class="timeline-container" aria-label="Timeline from ${formatTimelineDate(startDate, displayYearsOnly)} to ${formatTimelineDate(endDate, displayYearsOnly)}">
+      <div class="timeline-step-markers" aria-hidden="true"></div>
       <div class="timeline-track" aria-hidden="true"></div>
       ${ticksHtml}
     </div>
   `;
+}
+
+function renderStepTimelineMarkers(stepMarkers) {
+  const markerContainer = document.querySelector(
+    "#timeline .timeline-step-markers",
+  );
+  if (!markerContainer || !timelineStartDate || !timelineEndDate) {
+    return;
+  }
+
+  const totalRangeMs = timelineEndDate.getTime() - timelineStartDate.getTime();
+
+  const markersHtml = (stepMarkers || [])
+    .map((stepMarker) => {
+      const markerDate = parseTimelineDate(stepMarker.timelineDate);
+      if (!markerDate) {
+        return "";
+      }
+
+      const markerDateMs = markerDate.getTime();
+      const startMs = timelineStartDate.getTime();
+      const endMs = timelineEndDate.getTime();
+      if (markerDateMs < startMs || markerDateMs > endMs) {
+        return "";
+      }
+
+      const leftPercentage =
+        totalRangeMs === 0
+          ? 0
+          : ((markerDateMs - startMs) / totalRangeMs) * 100;
+
+      return `<div class="timeline-step-marker" data-step="${stepMarker.stepNumber}" 
+        style="left: ${leftPercentage}%;">
+        <span class="timeline-step-label">${formatTimelineDate(markerDate, displayYearsOnly)}</span>
+        <span class="timeline-step-caret" aria-hidden="true"></span></div>`;
+    })
+    .join("");
+
+  markerContainer.innerHTML = markersHtml;
+}
+
+function setActiveTimelineStep(stepNumber) {
+  const markerElements = document.querySelectorAll(
+    "#timeline .timeline-step-marker",
+  );
+  markerElements.forEach((markerElement) => {
+    markerElement.classList.toggle(
+      "is-active",
+      Number(markerElement.dataset.step) === Number(stepNumber),
+    );
+  });
+}
+
+function hideTimelineStepMarker(stepNumber) {
+  const markerElement = document.querySelector(
+    `#timeline .timeline-step-marker[data-step="${stepNumber}"]`,
+  );
+  if (!markerElement) {
+    return;
+  }
+  markerElement.classList.remove("is-active");
 }
 
 function areAllDatesJanuaryFirst(tickDates) {
@@ -189,4 +258,9 @@ function formatTimelineDate(date, displayYearsOnly = false) {
   });
 }
 
-export { createTimelineInHtml };
+export {
+  createTimelineInHtml,
+  renderStepTimelineMarkers,
+  setActiveTimelineStep,
+  hideTimelineStepMarker,
+};

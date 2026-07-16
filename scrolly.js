@@ -7,6 +7,7 @@
 import { StepData, isPrintView } from "./common.js";
 import { displayStickyMap, invalidateLeafletMapSize } from "./leaflet-maps.js";
 import { convertPageToPrintView } from "./print-view.js";
+import { hideTimelineStepMarker, setActiveTimelineStep } from "./timeline.js";
 
 let _stickyImageContainer = null;
 let _stickyMapContainer = null;
@@ -61,11 +62,20 @@ function handleStepEnter(response) {
   steps.forEach((step) => step.classList.remove("is-active"));
   stepElement.classList.add("is-active");
   console.log("Step " + stepElement.dataset.step + " entered");
+  setActiveTimelineStep(stepElement.dataset.step);
 
   setStepHorizontalWidths(stepElement);
   replaceStepStickyContent(stepElement);
 
   _isTransitioning = false;
+}
+
+function handleStepExit(response) {
+  const stepElement = response.element;
+  if (!stepElement || !stepElement.dataset || !stepElement.dataset.step) {
+    return;
+  }
+  hideTimelineStepMarker(stepElement.dataset.step);
 }
 
 function setStepHorizontalWidths(stepElement) {
@@ -300,7 +310,8 @@ function initScrollama() {
       offset: 0.65, // what % from the top of the viewport the step should be considered "entered"
       debug: false,
     })
-    .onStepEnter(handleStepEnter);
+    .onStepEnter(handleStepEnter)
+    .onStepExit(handleStepExit);
 
   // setup resize event
   window.addEventListener("resize", () => {
