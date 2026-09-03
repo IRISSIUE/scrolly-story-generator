@@ -1,3 +1,7 @@
+:root {
+  --timeline-footer-height: 6.9rem;
+}
+
 #timeline {
   position: fixed;
   left: 0;
@@ -15,7 +19,7 @@
 }
 
 body.has-fixed-timeline main {
-  padding-bottom: 10.5rem;
+  padding-bottom: calc(var(--timeline-footer-height) + 1rem);
 }
 
 .timeline-container {
@@ -100,6 +104,10 @@ body.has-fixed-timeline main {
 }
 
 @media only screen and (max-width: 768px) {
+  :root {
+    --timeline-footer-height: 7rem;
+  }
+
   #timeline {
     padding: 1rem 1rem 1.5rem 1rem;
   }
@@ -121,6 +129,6 @@ body.has-fixed-timeline main {
   }
 
   body.has-fixed-timeline main {
-    padding-bottom: 9.5rem;
+    padding-bottom: calc(var(--timeline-footer-height) + 1.5rem);
   }
 }
