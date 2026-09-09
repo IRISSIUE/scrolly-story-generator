@@ -111,11 +111,11 @@ describe("Common Test Module", () => {
         "",
         "",
         "",
-        "5",
+        "5e",
       );
 
       expect(() => storyData.validate("Testing story data")).to.throw(
-        'Timeline Tick Interval of "5" is invalid',
+        'Timeline Tick Interval of "5e" is invalid',
       );
     });
 
