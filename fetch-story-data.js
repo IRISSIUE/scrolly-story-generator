@@ -67,6 +67,7 @@ export function convertExcelDataToScrollyData(workbook, sheetsArray) {
     header: 1,
     defval: "",
     blankrows: false,
+    raw: false, // Keeps dates as strings instead of converting to numbers, so step dates can be displayed as entered in the spreadsheet
   });
 
   const story = convertSheetDataToStoryData(excelStoryData);

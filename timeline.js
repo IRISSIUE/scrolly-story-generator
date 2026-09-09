@@ -91,7 +91,7 @@ function renderStepTimelineMarkers(stepMarkers) {
 
       return `<div class="timeline-step-marker" data-step="${stepMarker.stepNumber}" 
         style="left: ${leftPercentage}%;">
-        <span class="timeline-step-label">${formatTimelineDate(markerDate, displayYearsOnly)}</span>
+        <span class="timeline-step-label">${stepMarker.timelineDate}</span>
         <span class="timeline-step-caret" aria-hidden="true"></span></div>`;
     })
     .join("");
