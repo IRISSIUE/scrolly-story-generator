@@ -27,14 +27,14 @@ describe("Excel Sheet Tests", () => {
       expect(() => {
         throwErrorIfExcelSheetIsMissingSheetNames(
           worksheetMissingStory,
-          sheetNames
+          sheetNames,
         );
       }).to.throw(ScrollyError, 'Spreadsheet must contain a "Story" sheet.');
 
       expect(() => {
         throwErrorIfExcelSheetIsMissingSheetNames(
           worksheetMissingSteps,
-          sheetNames
+          sheetNames,
         );
       }).to.throw(ScrollyError, 'Spreadsheet must contain a "Steps" sheet.');
     });
@@ -81,6 +81,78 @@ describe("Excel Sheet Tests", () => {
       expect(actualResult.stepData[0].contentType).to.equal("image");
       expect(actualResult.stepData[0].filePath).to.equal("media/test.jpg");
       expect(actualResult.stepData[0].altText).to.equal("Test image");
+    });
+
+    it("converts step timeline date cells to display strings", () => {
+      const worksheet = {
+        SheetNames: ["Story", "Steps"],
+        Sheets: {
+          Story: {
+            "!ref": "A1:M2",
+            A1: { v: "ScrollType", t: "s" },
+            B1: { v: "Title", t: "s" },
+            C1: { v: "Subtitle", t: "s" },
+            A2: { v: "left-side", t: "s" },
+            B2: { v: "A Title", t: "s" },
+            C2: { v: "A subtitle", t: "s" },
+          },
+          Steps: {
+            "!ref": "A1:J2",
+            A1: { v: "ContentType", t: "s" },
+            B1: { v: "FilePath", t: "s" },
+            C1: { v: "AltText", t: "s" },
+            I1: { v: "TimelineDate", t: "s" },
+            J1: { v: "Text", t: "s" },
+            A2: { v: "image", t: "s" },
+            B2: { v: "media/test.jpg", t: "s" },
+            C2: { v: "Test image", t: "s" },
+            I2: { v: new Date(2022, 0, 3), t: "d" },
+            J2: { v: "Step text", t: "s" },
+          },
+        },
+      };
+
+      const sheetNames = ["Story", "Steps"];
+      const actualResult = convertExcelDataToScrollyData(worksheet, sheetNames);
+
+      expect(actualResult.stepData).to.have.length(1);
+      expect(actualResult.stepData[0].timelineDate).to.equal("1/3/22");
+    });
+
+    it("Keeps timeline date strings exactly as entered", () => {
+      const worksheet = {
+        SheetNames: ["Story", "Steps"],
+        Sheets: {
+          Story: {
+            "!ref": "A1:M2",
+            A1: { v: "ScrollType", t: "s" },
+            B1: { v: "Title", t: "s" },
+            C1: { v: "Subtitle", t: "s" },
+            A2: { v: "left-side", t: "s" },
+            B2: { v: "A Title", t: "s" },
+            C2: { v: "A subtitle", t: "s" },
+          },
+          Steps: {
+            "!ref": "A1:J2",
+            A1: { v: "ContentType", t: "s" },
+            B1: { v: "FilePath", t: "s" },
+            C1: { v: "AltText", t: "s" },
+            I1: { v: "TimelineDate", t: "s" },
+            J1: { v: "Text", t: "s" },
+            A2: { v: "image", t: "s" },
+            B2: { v: "media/test.jpg", t: "s" },
+            C2: { v: "Test image", t: "s" },
+            I2: { v: "Feb 3, 2024", t: "s" },
+            J2: { v: "Step text", t: "s" },
+          },
+        },
+      };
+
+      const sheetNames = ["Story", "Steps"];
+      const actualResult = convertExcelDataToScrollyData(worksheet, sheetNames);
+
+      expect(actualResult.stepData).to.have.length(1);
+      expect(actualResult.stepData[0].timelineDate).to.equal("Feb 3, 2024");
     });
   });
 });

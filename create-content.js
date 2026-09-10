@@ -7,6 +7,7 @@ import { fetchScrollyData } from "./fetch-story-data.js";
 import { validateStepDataArray } from "./common.js";
 import { displayThenThrowError } from "./common.js";
 import { stripHtml } from "./common.js";
+import { createTimelineInHtml, renderStepTimelineMarkers } from "./timeline.js";
 
 let defaultTextHorizontalPercentage = "33.0";
 
@@ -27,13 +28,30 @@ export async function createAllStoryScrollyContentInHTML() {
       allScrollyData.storyData.textHorizontalPercentage,
     );
 
+    createTimelineInHtml(
+      allScrollyData.storyData.timelineStart,
+      allScrollyData.storyData.timelineEnd,
+      allScrollyData.storyData.timelineTickInterval,
+    );
+
     createStoryContentInHtml(allScrollyData.storyData);
     createStepsContentInHtml(allScrollyData.stepData);
+    renderStepTimelineMarkers(getStepTimelineMarkersFromHtml());
 
     applyGlobalStyles(allScrollyData.storyData);
   } catch (scrollyError) {
     displayThenThrowError(scrollyError);
   }
+}
+
+function getStepTimelineMarkersFromHtml() {
+  const stepElements = document.querySelectorAll(".step[data-timeline-date]");
+  return Array.from(stepElements).map((stepElement) => {
+    return {
+      stepNumber: Number(stepElement.dataset.step),
+      timelineDate: stepElement.dataset.timelineDate,
+    };
+  });
 }
 
 /*
@@ -217,6 +235,9 @@ function createStepElement(stepData, stepNumber) {
   stepElement.dataset.textHorizontalPercentage = getValidHorizontalPercentage(
     stepData.textHorizontalPercentage,
   );
+  if (stepData.timelineDate) {
+    stepElement.dataset.timelineDate = stepData.timelineDate;
+  }
 
   if (stepData.text && stepData.text !== "") {
     stepElement.innerHTML = `<div class="step-content" tabIndex="0">${stepData.text}</div>`;

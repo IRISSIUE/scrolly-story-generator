@@ -37,6 +37,17 @@
   transition: opacity 0.5s linear;
 }
 
+/* Keep sticky content vertically centered in the usable viewport 
+  above the timeline footer. The calc values are the total screen height minus 
+  the timeline footer height, thus the total available height for the sticky content.
+  If we set the height to 80% of the available height, and the top of the content to 10%, we'll
+  have top/bottom margin of 10% of the available height
+    */
+body.has-fixed-timeline .sticky-container {
+  top: calc((100vh - var(--timeline-footer-height)) * 0.1);
+  height: calc((100vh - var(--timeline-footer-height)) * 0.8);
+}
+
 .sticky-image-container {
   margin: 0;
 
@@ -59,7 +70,7 @@
    width, because it will be letterboxed if it doesn't fit).
    This will switch to "object-fit: contain" when the user specifices the image is more vertically
    oriented, which will ensure the full height of the image is displayed */
-  object-fit: cover; 
+  object-fit: cover;
 }
 
 .sticky-map-container {
@@ -82,7 +93,9 @@
 
 .sticky-container img {
   /* eases transition when zoomming an image */
-  transition: transform 1s linear, opacity 0.5s linear;
+  transition:
+    transform 1s linear,
+    opacity 0.5s linear;
 }
 
 .sticky-container video,
@@ -94,7 +107,7 @@ map {
 .steps-container {
   position: relative;
   padding: 0 0rem;
-  width:33%;
+  width: 33%;
   transition: width 0.5s ease-in-out;
 }
 
@@ -105,7 +118,9 @@ map {
   align-items: center;
   justify-content: center;
   opacity: 0%;
-  transform: translateZ(0); /* fixes apple/Safari bug where transitions don't work properly */
+  transform: translateZ(
+    0
+  ); /* fixes apple/Safari bug where transitions don't work properly */
 
   /* Ensure an inactive step takes up at least 25% of the viewport width, otherwise
   if an active step is at 0 width (full size for the sticky content), the previous
@@ -142,7 +157,7 @@ map {
 .step.is-active {
   opacity: 100%;
   transition: opacity 1s linear;
-  min-width:0; /* reset active step to have no minimum width so it can shrink fully if specified to be 0 */
+  min-width: 0; /* reset active step to have no minimum width so it can shrink fully if specified to be 0 */
 }
 
 .text-content {

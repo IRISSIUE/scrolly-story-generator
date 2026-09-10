@@ -80,6 +80,9 @@ The story tab in the spreadsheet allows you to specify the meta-data below:
 | BackgroundColor          | The background color to apply to the entire documents. See below for valid color values  |
 | ScrollBoxBackgroundColor | The background color to apply to the scrolling text box. See below for valid color values  |
 | ScrollBoxTextColor       | The color to apply to the text of the scrolling text box. See below for valid color values  |
+| TimelineStart          | The first date or year of a timeline that can be displayed at the bottom of the screen  |
+| TimelineEnd | The last date or year to be displayed in the timeline  |
+| TimelineTickInterval       | How frequently to display tickmarks between the timeline start and end, including either "d" for days, "m" for months, or "y" for years, such as "5y" to specify tickmarks every 5 years  |
 
 ##### Colors
 Colors can be specified using one of the following formats:
@@ -108,7 +111,8 @@ Your media type is specified in Column A, _ContentType_. For the next few column
 | Column                      | Description                                                                                                                                        |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Text               | Most of your steps will require text. For maps, images, and videos, the text will display to the left of the media item. For the text content type, the text will take up the full width of the page. If you don't supply text, the text area on that step will simply be blank. See below for more info on formatting text.                                                                                  |
-| TextHorizontalPercentage                | Works the same way as Story-Level horizontal percentage above, but allows you to have different widths on different steps. You can specify 0 if you want the media to take up the full width of the screen, or 100 if you want only text for that step. If specified, the text and media boxes will dynamically widen and narrow as you scroll. Leave blank to inherit the default story-level horizontal percentage.                                                                                      
+| TextHorizontalPercentage                | Works the same way as Story-Level horizontal percentage above, but allows you to have different widths on different steps. You can specify 0 if you want the media to take up the full width of the screen, or 100 if you want only text for that step. If specified, the text and media boxes will dynamically widen and narrow as you scroll. Leave blank to inherit the default story-level horizontal percentage.   
+| TimelineDate                | The date to display on the timeline for this step, if the timeline exists. You can specify a date or a year, and it will display as you specify. If the spreadsheet changes the format automatically, you can put a single quote before it to force it to the format you want.                                                                                       
 
 
 #### Formatting Text
@@ -171,9 +175,9 @@ In print mode:
 
 ### ZIP export
 
-If you want a portable package that can be copied to another server without fetching or depending on spreadsheet data again, open the hamburger menu at the top right of the page and select the Export option. This will download a ZIP file containing the story you created along with the images used in the story that are local to the GitHub repository.
+If your story is in a finished, stable state and you want to be able to copy it to a different server without depending on a github repository or a spreadsheet, you can download the content using the ZIP export. This will download a ZIP file containing just the files needed to display the story, which can then be copied to any webserver to be displayed as independent web content.  the story you created along with the images used in the story that are local to the GitHub repository. You'll still need to run the index.html file using a web server for it to work properly.
 
-The downloaded zip will no longer depend on GitHub Pages or spreadsheet data. However, you'll still need to run the index.html file using a web server for it to work properly.
+To invoke ZIP Export, open the hamburger menu at the top right of the page and select the Export option. 
 
 
 ### Classroom resources

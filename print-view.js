@@ -163,7 +163,13 @@ async function buildPrintableContentSection() {
   contentSection.appendChild(printableContainer);
 }
 
+function removeTimeline() {
+  const timeline = document.getElementById("timeline");
+  timeline?.remove();
+}
+
 export async function convertPageToPrintView() {
+  removeTimeline();
   document.body.classList.add("print-view");
   await buildPrintableContentSection();
 
