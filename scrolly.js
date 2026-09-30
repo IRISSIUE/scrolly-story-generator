@@ -15,6 +15,7 @@ let _stickyVideoContainer = null;
 let _prevStepData = null;
 let _currentStep = -1;
 let _isTransitioning = false;
+let _latestImageRevealRequestId = 0;
 
 const transitionInMilliseconds = 500;
 
@@ -250,11 +251,16 @@ function displayStickyImage(stepData) {
     const nextSource = stepData.filePath;
     const nextAlt = stepData.altText;
     const nextOrientation = stepData.imageOrientation;
+    const imageRevealRequestId = ++_latestImageRevealRequestId;
 
     let hasDecodedImage = false;
     let hasFinishedFadeOutDelay = false;
 
     const revealWhenReady = () => {
+      // if user has scrolled to a different image before this one finished loading, do not reveal this image
+      if (imageRevealRequestId !== _latestImageRevealRequestId) {
+        return;
+      }
       if (!hasDecodedImage || !hasFinishedFadeOutDelay) {
         return;
       }
