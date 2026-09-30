@@ -247,19 +247,64 @@ function displayStickyImage(stepData) {
     // in that case, but that's ok, a longer transition is appropriate in that case
     img.style.opacity = 0;
 
-    // fade in the image after the opacity transition
-    setTimeout(() => {
-      // Change the image source
-      img.src = stepData.filePath;
-      img.alt = stepData.altText;
-      img.style.opacity = 1;
+    const nextSource = stepData.filePath;
+    const nextAlt = stepData.altText;
+    const nextOrientation = stepData.imageOrientation;
 
-      setImageOrientation(img, stepData.imageOrientation);
+    let hasDecodedImage = false;
+    let hasFinishedFadeOutDelay = false;
+
+    const revealWhenReady = () => {
+      if (!hasDecodedImage || !hasFinishedFadeOutDelay) {
+        return;
+      }
+      fadeInStickyImage(img, nextSource, nextAlt, nextOrientation);
+    };
+
+    // Start decode immediately so reveal time is max(decode time, fade-out time),
+    // rather than fade-out time plus decode time.
+    preloadAndDecodeImage(nextSource, () => {
+      hasDecodedImage = true;
+      revealWhenReady();
+    });
+
+    setTimeout(() => {
+      hasFinishedFadeOutDelay = true;
+      revealWhenReady();
     }, transitionInMilliseconds);
   }
   if (stepData.zoomLevel) {
     img.style.transform = `scale(${stepData.zoomLevel})`;
   }
+}
+
+function preloadAndDecodeImage(imageSource, onReady) {
+  // Decode off-DOM first so reveal happens with decoded pixels available.
+  const preloadedImage = new Image();
+  preloadedImage.src = imageSource;
+
+  if (typeof preloadedImage.decode === "function") {
+    preloadedImage.decode().then(onReady).catch(onReady);
+  } else {
+    preloadedImage.onload = onReady;
+    preloadedImage.onerror = onReady;
+  }
+}
+
+function fadeInStickyImage(img, imageSource, imageAlt, imageOrientation) {
+  // Set the image orientation first, which needs to redraw the image,
+  // then wait two frames to ensure the browser has committed the new source
+  // before opacity fades in. Otherwise, it will fade in the image, then redraw
+  // which will cause a flicker effect.
+  setImageOrientation(img, imageOrientation);
+  img.src = imageSource;
+  img.alt = imageAlt;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      img.style.opacity = 1;
+    });
+  });
 }
 
 function setImageOrientation(img, imageOrientation) {
